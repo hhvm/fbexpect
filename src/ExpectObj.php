@@ -9,7 +9,7 @@
  *
  */
 
-final class ExpectObj extends \PHPUnit\Framework\Assert {
+final class ExpectObj extends Assert {
   public function __construct(private ImmVector<mixed> $vars) { }
 
   /**************************************
@@ -46,7 +46,12 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toAlmostEqual($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertAlmostEquals($expected, $this->vars->firstValue(), $msg);
+    $this->toEqualWithDelta(
+      $expected,
+      1.19e-07 * 4, // roughly equivalent to gtest
+      '%s',
+      $msg,
+    );
   }
 
   /**
@@ -55,9 +60,18 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toEqualWithNANEqual($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertEqualsWithNANEqual(
-      $expected, $this->vars->firstValue(), $msg
-    );
+
+    $actual = $this->vars->firstValue();
+    if (
+      is_float($expected) &&
+      is_float($actual) &&
+      is_nan($expected) &&
+      is_nan($actual)
+    ) {
+      return;
+    }
+
+    $this->toEqual($expected, '%s', $msg);
   }
 
   /**
@@ -154,7 +168,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toMatchRegExp($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertRegExp($expected, $this->vars->firstValue(), $msg);
+    $this->assertRegExp($expected, (string) $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -401,7 +415,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotMatchRegExp($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotRegExp($expected, $this->vars->firstValue(), $msg);
+    $this->assertNotRegExp($expected, (string) $this->vars->firstValue(), $msg);
   }
 
   public function toMatchSnapshot(string $message = '', ...): void {
@@ -641,7 +655,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
       $this->tryCallWithArgsReturnException($args, $exception_class);
 
     if (!$exception) {
-      self::fail(
+      $this->fail(
         "$desc: Expected exception $exception_class wasn't thrown"
       );
     }
@@ -697,7 +711,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $exception = $this->tryCallWithArgsReturnException($args, 'CodedException');
 
     if (!$exception) {
-      self::fail($desc ?: "CodedException $code wasn't thrown");
+      $this->fail($desc ?: "CodedException $code wasn't thrown");
     }
 
     expect($exception->getErrorCode())->toEqual(
