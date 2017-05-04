@@ -1,4 +1,4 @@
-<?hh
+<?hh // strict
 /*
  *  Copyright (c) 2004-present, Facebook, Inc.
  *  All rights reserved.
@@ -29,6 +29,6 @@
  *   - Function Exception Assertions
  *   - Mock Object Asserts
  */
-function expect(...): ExpectObj {
-  return new ExpectObj(func_get_args());
+function expect(mixed ...$args): ExpectObj {
+  return new ExpectObj(new ImmVector($args));
 }

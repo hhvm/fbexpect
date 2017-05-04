@@ -10,6 +10,8 @@
  */
 
 final class ExpectObj extends \PHPUnit\Framework\Assert {
+  public function __construct(private ImmVector<mixed> $vars) { }
+
   /**************************************
    **************************************
    *********** Basic Assertions *********
@@ -28,7 +30,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toEqual($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertEquals($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertEquals($expected, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -38,13 +40,13 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toEqualWithDelta($expected, float $delta, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 3));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertEquals($expected, head_UNTYPED($this->vars), $msg, $delta);
+    $this->assertEquals($expected, $this->vars->firstValue(), $msg, $delta);
   }
 
   public function toAlmostEqual($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertAlmostEquals($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertAlmostEquals($expected, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -54,7 +56,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertEqualsWithNANEqual(
-      $expected, head_UNTYPED($this->vars), $msg
+      $expected, $this->vars->firstValue(), $msg
     );
   }
 
@@ -66,49 +68,49 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toBeSame($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertSame($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertSame($expected, $this->vars->firstValue(), $msg);
   }
 
    // Asserts: $actual === true
   public function toBeTrue(string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertTrue(head_UNTYPED($this->vars), $msg);
+    $this->assertTrue($this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual === false
   public function toBeFalse(string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertFalse(head_UNTYPED($this->vars), $msg);
+    $this->assertFalse($this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual === null
   public function toBeNull(string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNull(head_UNTYPED($this->vars), $msg);
+    $this->assertNull($this->vars->firstValue(), $msg);
   }
 
   // Asserts: empty($actual) == true
   public function toBeEmpty(string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertEmpty(head_UNTYPED($this->vars), $msg);
+    $this->assertEmpty($this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual > $expected
   public function toBeGreaterThan($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertGreaterThan($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertGreaterThan($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual < $expected
   public function toBeLessThan($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertLessThan($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertLessThan($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual <= $expected
@@ -119,7 +121,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   ): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertLessThanOrEqual($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertLessThanOrEqual($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual => $expected
@@ -130,7 +132,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   ): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertGreaterThanOrEqual($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertGreaterThanOrEqual($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual instanceof $type
@@ -143,7 +145,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $this->assertSingleArg(__FUNCTION__);
     $this->assertInstanceOf(
       $class_or_interface,
-      head_UNTYPED($this->vars),
+      $this->vars->firstValue(),
       $msg
     );
   }
@@ -152,7 +154,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toMatchRegExp($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertRegExp($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertRegExp($expected, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -165,7 +167,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toBeType($type,  string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertType($type, head_UNTYPED($this->vars), $msg);
+    $this->assertType($type, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -178,7 +180,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toContain($needle, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertContains($needle, head_UNTYPED($this->vars), $msg);
+    $this->assertContains($needle, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -188,7 +190,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toContainKey($key, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $obj = head_UNTYPED($this->vars);
+    $obj = $this->vars->firstValue();
     invariant(
       $obj instanceof KeyedTraversable,
       'ERROR: expect(...)->toContainKey only can be applied to '.
@@ -213,7 +215,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toInclude($expected_subset, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertSubset($expected_subset, head_UNTYPED($this->vars), $msg);
+    $this->assertSubset($expected_subset, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -224,7 +226,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertKeyAndValueEquals(
-      $expected, head_UNTYPED($this->vars), $msg
+      $expected, $this->vars->firstValue(), $msg
     );
   }
 
@@ -236,7 +238,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertContentsEqual(
-      $expected, head_UNTYPED($this->vars), $msg
+      $expected, $this->vars->firstValue(), $msg
     );
   }
 
@@ -247,7 +249,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
 
-    $actual = head_UNTYPED($this->vars);
+    $actual = $this->vars->firstValue();
     invariant(
       $actual instanceof Traversable,
       'ERROR: expect(...)->toBeSortedByKey only can be applied to '.
@@ -266,7 +268,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
 
-    $actual = head_UNTYPED($this->vars);
+    $actual = $this->vars->firstValue();
     invariant(
       $actual instanceof Traversable,
       'ERROR: expect(...)->toBeSortedByKey only can be applied to '.
@@ -292,7 +294,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $this->assertSingleArg(__FUNCTION__);
     $this->assertURIsEquivalent(
       $expected_uri,
-      head_UNTYPED($this->vars),
+      $this->vars->firstValue(),
       array(),
       $msg
     );
@@ -308,14 +310,14 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotEqual($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotEquals($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertNotEquals($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual !== null
   public function toNotBeNull(string $msg = '', ...) {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotNull(head_UNTYPED($this->vars), $msg);
+    $this->assertNotNull($this->vars->firstValue(), $msg);
   }
 
   /**
@@ -329,7 +331,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotBeType($type,  string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotType($type, head_UNTYPED($this->vars), $msg);
+    $this->assertNotType($type, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -340,14 +342,14 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotBeSame($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotSame($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertNotSame($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: empty($actual) != true
   public function toNotBeEmpty(string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotEmpty(head_UNTYPED($this->vars), $msg);
+    $this->assertNotEmpty($this->vars->firstValue(), $msg);
   }
 
   // Asserts: !($actual instanceof $class_or_interface)
@@ -359,7 +361,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotInstanceOf(
       $class_or_interface,
-      head_UNTYPED($this->vars),
+      $this->vars->firstValue(),
       $msg
     );
   }
@@ -374,7 +376,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotContain($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotContains($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertNotContains($expected, $this->vars->firstValue(), $msg);
   }
 
   /**
@@ -384,7 +386,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotContainKey($key, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $obj = head_UNTYPED($this->vars);
+    $obj = $this->vars->firstValue();
     invariant(
       $obj instanceof KeyedTraversable,
       'ERROR: expect(...)->toNotContainKey only can be applied to '.
@@ -399,7 +401,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
   public function toNotMatchRegExp($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotRegExp($expected, head_UNTYPED($this->vars), $msg);
+    $this->assertNotRegExp($expected, $this->vars->firstValue(), $msg);
   }
 
   public function toMatchSnapshot(string $message = '', ...): void {
@@ -724,11 +726,11 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
    **** Private implementation details ***
    ***************************************
    ***************************************/
-  private function assertSingleArg($method) {
+  private function assertSingleArg(string $method) {
     invariant(
-      count($this->vars) == 1,
-      /* HH_FIXME[4110]: Invalid format-string for invariant/invariant_violation */
-      "Single arg expected for expect()->$method()",
+      count($this->vars) === 1,
+      'Single arg expected for expect()->%s()',
+      $method,
     );
   }
 
@@ -737,7 +739,7 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
     string $expected_exception_type,
   ) {
     try {
-      $callable = count($this->vars) == 1 ? head_UNTYPED($this->vars) : $this->vars;
+      $callable = count($this->vars) == 1 ? $this->vars->firstValue() : $this->vars;
       $returned = call_user_func_array($callable, $args);
 
       if ($returned instanceof Awaitable) {
@@ -756,8 +758,6 @@ final class ExpectObj extends \PHPUnit\Framework\Assert {
 
     return null;
   }
-
-  public function __construct(private array $vars) { }
 
   /**
    * Conditionally invert the expectation.
