@@ -16,12 +16,23 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
     string $message = '',
   ): void {
     if (!is_string($expected)) {
-      /* HH_IGNORE_ERROR[2049] unbound name */
+      /* HH_FIXME[2049] unbound name */
+      throw \PHPUnit\Util\InvalidArgumentHelper::factory(1, 'string');
+    }
+    if (is_type($expected)) {
+      $constraint = new Constraint\IsType($expected);
+    } else if (class_exists($expected) || interface_exists($expected)) {
+      $constraint = new \PHPUnit_Framework_Constraint_IsInstanceOf(
+        /* HH_IGNORE_ERROR[4110] is really a classname */ $expected,
+      );
+    } else {
+      /* HH_FIXME[2049] unbound name */
       throw \PHPUnit\Util\InvalidArgumentHelper::factory(
         1,
         'class or interface name',
       );
     }
+    $this->assertThat($actual, $constraint, $message);
   }
 
   public function assertSubset(

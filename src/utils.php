@@ -24,3 +24,16 @@ function print_type(mixed $value): string {
   }
   return gettype($value);
 }
+
+function is_type(string $value): bool {
+  switch ($value) {
+    case 'vec':
+    case 'dict':
+    case 'keyset':
+      return true;
+    default:
+      /* HH_FIXME[2049] unbound name */
+      /* HH_FIXME[4107] unbound name */
+      return \PHPUnit\Util\Type\isType($value);
+  }
+}
