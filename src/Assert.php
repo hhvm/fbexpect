@@ -11,14 +11,10 @@
 
 abstract class Assert extends \PHPUnit\Framework\Assert {
   public function assertType(
-    mixed $expected,
+    string $expected,
     mixed $actual,
     string $message = '',
   ): void {
-    if (!is_string($expected)) {
-      /* HH_FIXME[2049] unbound name */
-      throw \PHPUnit\Util\InvalidArgumentHelper::factory(1, 'string');
-    }
     if (is_type($expected)) {
       $constraint = new Constraint\IsType($expected);
     } else if (class_exists($expected) || interface_exists($expected)) {
