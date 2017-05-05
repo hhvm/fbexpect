@@ -10,6 +10,9 @@
  */
 
 abstract class Assert extends \PHPUnit\Framework\Assert {
+  /**
+   * Asserts that a variable is of a given type
+   */
   public function assertType(
     string $expected,
     mixed $actual,
@@ -28,6 +31,32 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
         'class or interface name',
       );
     }
+    $this->assertThat($actual, $constraint, $message);
+  }
+
+  /**
+   * Asserts that a variable is not of a given type
+   */
+  public function assertNotType(
+    string $expected,
+    mixed $actual,
+    string $message = '',
+  ): void {
+    if (is_type($expected)) {
+      $constraint = new Constraint\IsType($expected);
+    } else if (class_exists($expected) || interface_exists($expected)) {
+      $constraint = new \PHPUnit_Framework_Constraint_IsInstanceOf(
+        /* HH_IGNORE_ERROR[4110] is really a classname */ $expected,
+      );
+    } else {
+      /* HH_FIXME[2049] unbound name */
+      throw \PHPUnit\Util\InvalidArgumentHelper::factory(
+        1,
+        'class or interface name',
+      );
+    }
+    /* HH_FIXME[2049] unbound name */
+    $constraint = \PHPUnit_Framework_Constraint_Not($constraint);
     $this->assertThat($actual, $constraint, $message);
   }
 
@@ -143,6 +172,33 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
 
       $index++;
     }
+  }
+
+  /**
+   * Checks that a collection is sorted according to some given key in the
+   * elements.
+   *
+   * @param Traversable<Tv> $collection Any collection
+   * @param (function(Tv) : mixed) $key_extractor A function that extracts a
+   *   sorting key from every item
+   * @param ?string $message A message to display if the collection is not
+   *                         sorted correctly
+   *
+   * The collection is considered sorted iff the keys extracted from every
+   * element form a vector that is sorted in natural order.
+   *
+   * A collection with 0 or 1 items is always considered sorted.
+   */
+  public function assertIsSortedByKey<Tv>(
+    Traversable<Tv> $collection,
+    (function(Tv) : mixed) $key_extractor,
+    string $message = '',
+  ): void {
+    $this->assertIsSorted(
+      $collection,
+      ($a,$b) ==> $key_extractor($a) <= $key_extractor($b),
+      $message,
+    );
   }
 
   private static function sortArrayRecursive(array &$arr): void {

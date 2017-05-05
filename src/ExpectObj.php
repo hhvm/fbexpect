@@ -293,27 +293,6 @@ final class ExpectObj extends Assert {
     $this->assertIsSortedByKey($actual, $key_extractor, $msg);
   }
 
-  /**
-   * Asserts: $actual is roughly equal to the expected URI
-   * Notes:
-   *
-   *   - Asserts that protocol (ex: "http"), domain, port are exactly the same
-   *   - Paths are "cleaned up" before being compared (ex: '/' and no path are
-   *     equal)
-   *   - Both URIs must have same GET params but order doesn't matter. If a URI
-   *     has a duplicate param, the last one will be considered
-   */
-  public function toEqualURI($expected_uri, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
-    $this->assertSingleArg(__FUNCTION__);
-    $this->assertURIsEquivalent(
-      $expected_uri,
-      $this->vars->firstValue(),
-      array(),
-      $msg
-    );
-  }
-
   /**************************************
    **************************************
    ******* Negated Basic Assertions******
@@ -418,157 +397,6 @@ final class ExpectObj extends Assert {
     $this->assertNotRegExp($expected, (string) $this->vars->firstValue(), $msg);
   }
 
-  public function toMatchSnapshot(string $message = '', ...): void {
-    $message = vsprintf($message, array_slice(func_get_args(), 1));
-    $this->assertSingleArg(__FUNCTION__);
-    $snapshot = TestSnapshotListener::getCurrentSnapshot();
-    invariant(
-      $snapshot !== null,
-      'toMatchSnapshot(): Expected a snapshot to have been instantiated for '.
-      'the currently running test. Does your test case implement the '.
-      '`ISnapshotTest` interface?',
-    );
-    $data = first($this->vars);
-    $this->assertMatchesSnapshot($snapshot, $data, $message);
-  }
-
-  /***************************************
-   ***************************************
-   ****** Function Call Assertions *******
-   ***************************************
-   ***************************************
-   *
-   * Assert that functions or methods were/weren't called.
-   *
-   *
-   * Example usage:
-   *
-   *   expect($mock_foo, 'bar')->wasCalledOnce();
-   *   expect('Foo::bar')->wasCalledOnce(); // Autobahn unit tests only
-   *   expect('foo')->wasCalledOnce(); // Autobahn unit tests only
-   */
-
-  // Asserts: Function/method was called exactly once with any arguments
-  public function wasCalledOnce(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
-    $this->assertCalledOnce(
-      ...array_concat(make_array($this->vars), array(null), array($msg)),
-    );
-  }
-
-  // Asserts: Function/method was called exactly twice with any arguments
-  public function wasCalledTwice(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
-    $this->wasCalledNTimes(2, $msg);
-  }
-
-  // Asserts: Function/method was called exactly N times with any arguments
-  public function wasCalledNTimes(int $times, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
-    $this->assertNumCalls(
-      ...array_concat(make_array($this->vars), array($times, $msg)),
-    );
-  }
-
-  /**
-   * Asserts: Function/method was called exactly once and that call had the
-   *          given arguments
-   *
-   * Example usage:
-   *
-   *   foo(1, 2, 3); // code under test
-   *
-   *   expect('foo')->wasCalledOnceWith(1, 2, 3); // passes
-   *   expect('foo')->wasCalledOnceWith(4, 5, 6); // fails
-   */
-  public function wasCalledOnceWith(...): void {
-    $this->assertCalledOnce(
-      ...array_concat(make_array($this->vars), array(func_get_args())),
-    );
-  }
-
-  /**
-   * Asserts: Function/method was called at least once, and that the final call
-   *    had the given arguments
-   *
-   * Example usage:
-   *
-   *   foo('aardvark'); // Code under test
-   *   foo('badger');
-   *
-   *   expect('foo')->wasCalledLastWith('aardvark'; // Fail; not last call
-   *   expect('foo')->wasCalledLastWith('badger'); // Pass
-   */
-  public function wasCalledLastWith(...): void {
-    $args = array_concat(make_array($this->vars), array(func_get_args()));
-    $this->assertCalledLastWith(...$args);
-  }
-
-  /**
-   * Asserts: Calls to function/method match the given arrays of calls
-   * Note:    order of the calls matters
-   *
-   * Example usage:
-   *
-   *   foo(1, 2, 3);
-   *   foo(4, 5, 6);
-   *
-   *   expect('foo')->wasCalledWith(array(1,2,3), array(4,5,6)); // passes
-   *   expect('foo')->wasCalledWith(array(4,5,6), array(1,2,3)); // fails
-   */
-  public function wasCalledWith(...): void {
-    $this->assertCalls(
-      ...array_concat(make_array($this->vars), func_get_args()),
-    );
-  }
-
-  /**
-   * Asserts: Calls to function/method match the given array of array of calls
-   * Note:    This is the same as wasCalledWith() but can be called with an
-   *          array instead of a variable number of arguments.
-   *
-   * Example usage:
-   *
-   *   foo(1, 2, 3);
-   *   foo(4, 5, 6);
-   *
-   *   expect('foo')->wasCalledWithArray(array(array(1,2,3), array(4,5,6)));
-   */
-  public function wasCalledWithArray(array $calls, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
-    if ($msg) {
-     $calls[] = $msg;
-    }
-    $this->assertCalls(
-      ...array_concat(make_array($this->vars), $calls)
-    );
-  }
-
-  /**
-   * Asserts: All calls to function/method pass the given predicate
-   *
-   * Example usage:
-   *
-   *  foo(1, 2, 3);
-   *
-   *  expect('foo')->wasCalledWithArgumentsPassing(
-   *    ($a, $b, $c) ==> return $b == 2
-   *  );
-   */
-  public function wasCalledWithArgumentsPassing($f, $msg='') : void {
-    $this->assertCallsPass(
-      ...array_concat(make_array($this->vars), array($f, $msg)),
-    );
-  }
-
-  // Asserts: Function/method was not called
-  public function wasNotCalled(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
-    $this->assertNotCalled(
-      ...array_append(make_array($this->vars), $msg)
-    );
-  }
-
   /***************************************
    ***************************************
    **** Function Exception Assertions ****
@@ -662,11 +490,6 @@ final class ExpectObj extends Assert {
 
     if ($expected_exception_message !== null) {
       $message = $exception->getMessage();
-      // AliteRedirectExceptions implement getMessage, but return a URI instead
-      // of a string.
-      if ($message instanceof URI) {
-        $message = $message->toString();
-      }
 
       $this->assertContains(
         $expected_exception_message,
@@ -757,7 +580,7 @@ final class ExpectObj extends Assert {
       $returned = call_user_func_array($callable, $args);
 
       if ($returned instanceof Awaitable) {
-        $ret = Asio::awaitSynchronously($returned);
+        $ret = \HH\Asio\join($returned);
       }
     } catch (Exception $e) {
       expect($e)->toBeInstanceOf(
@@ -771,22 +594,5 @@ final class ExpectObj extends Assert {
     }
 
     return null;
-  }
-
-  /**
-   * Conditionally invert the expectation.
-   *
-   * expect($foo)->iff(foo === $bar)->toBeSame($bar) should always pass
-   *
-   * The return type is a lie for the benefit of Hack.
-   */
-  public function iff($condition) {
-    if ($condition) {
-      return $this;
-    } else {
-      // UNSAFE_BLOCK
-      return new InvertExpect($this);
-    }
-    // UNSAFE_BLOCK (bonus)
   }
 }
