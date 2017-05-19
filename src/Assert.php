@@ -9,6 +9,8 @@
  *
  */
 
+namespace Facebook\FBExpect;
+
 abstract class Assert extends \PHPUnit\Framework\Assert {
   /**
    * Asserts that a variable is of a given type

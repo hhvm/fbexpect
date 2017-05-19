@@ -9,6 +9,8 @@
  *
  */
 
+namespace Facebook\FBExpect;
+
 final class ExpectObj extends Assert {
   public function __construct(private ImmVector<mixed> $vars) { }
 
@@ -431,7 +433,7 @@ final class ExpectObj extends Assert {
     mixed ...$args
   ): void {
     $msg = vsprintf($msg, $args);
-    $e = $this->tryCallWithArgsReturnException(array(), Exception::class);
+    $e = $this->tryCallWithArgsReturnException(array(), \Exception::class);
     if ($e !== null) {
       $msg = sprintf(
         "%s was thrown: %s\n%s",
@@ -592,7 +594,7 @@ final class ExpectObj extends Assert {
       if ($returned instanceof Awaitable) {
         $ret = \HH\Asio\join($returned);
       }
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
       expect($e)->toBeInstanceOf(
         $expected_exception_type,
         'Expected to throw "%s", but instead got <%s> with message "%s"',

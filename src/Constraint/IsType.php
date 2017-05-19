@@ -9,7 +9,7 @@
  *
  */
 
-namespace Constraint;
+namespace Facebook\FBExpect\Constraint;
 
 class IsType extends \PHPUnit_Framework_Constraint_IsType {
   const type TPredicate = (function(mixed):bool);

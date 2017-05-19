@@ -9,6 +9,8 @@
  *
  */
 
+namespace Facebook\FBExpect;
+
 /**
  * Alternate interface to PHPUnit assertions similar to Jasmine JS
  *
