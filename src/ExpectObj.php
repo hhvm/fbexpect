@@ -201,14 +201,14 @@ final class ExpectObj extends Assert {
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toContainKey($key, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+  public function toContainKey($key, string $msg = '', mixed ...$args): void {
+    $msg = vsprintf($msg, $args);
     $this->assertSingleArg(__FUNCTION__);
     $obj = $this->vars->firstValue();
     invariant(
-      $obj instanceof KeyedTraversable,
+      $obj instanceof KeyedContainer,
       'ERROR: expect(...)->toContainKey only can be applied to '.
-      'KeyedTraversables, not %s.',
+      'KeyedContainers, not %s.',
       print_type($obj),
     );
     $this->assertTrue(array_key_exists($key, $obj), $msg);
@@ -236,11 +236,19 @@ final class ExpectObj extends Assert {
    * Asserts: $actual has the same content as $expected, i.e. the same
    * key/values regardless of order.
    */
-  public function toHaveSameShapeAs($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+  public function toHaveSameShapeAs(
+    $expected,
+    string $msg = '',
+    mixed ...$args
+  ): void {
+    $msg = vsprintf($msg, $args);
     $this->assertSingleArg(__FUNCTION__);
+
+    $value = $this->vars->firstValue();
     $this->assertKeyAndValueEquals(
-      $expected, $this->vars->firstValue(), $msg
+      $expected,
+      is_array($value) ? $value : [],
+      $msg,
     );
   }
 
@@ -251,9 +259,10 @@ final class ExpectObj extends Assert {
   public function toHaveSameContentAs($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertContentsEqual(
-      $expected, $this->vars->firstValue(), $msg
-    );
+    $value = $this->vars->firstValue();
+    $this->assertInstanceOf(Traversable::class, $value);
+    assert($value instanceof Traversable);
+    $this->assertContentsEqual($expected, $value, $msg);
   }
 
   /**
@@ -381,9 +390,9 @@ final class ExpectObj extends Assert {
     $this->assertSingleArg(__FUNCTION__);
     $obj = $this->vars->firstValue();
     invariant(
-      $obj instanceof KeyedTraversable,
+      $obj instanceof KeyedContainer,
       'ERROR: expect(...)->toNotContainKey only can be applied to '.
-      'KeyedTraversables, not %s.',
+      'KeyedContainers, not %s.',
       print_type($obj),
     );
     $this->assertFalse(isset($obj[$key]), $msg);
@@ -419,14 +428,15 @@ final class ExpectObj extends Assert {
    */
   public function notToThrow(
     ?string $msg = null,
-    ...
+    mixed ...$args
   ): void {
+    $msg = vsprintf($msg, $args);
     $e = $this->tryCallWithArgsReturnException(array(), Exception::class);
     if ($e !== null) {
       $msg = sprintf(
         "%s was thrown: %s\n%s",
         get_class($e),
-        vsprintf($msg, array_slice(func_get_args(), 1)),
+        $msg,
         implode("\n  ", array_map(
           $t ==> sprintf(  '%s: %s', idx($t, 'file'), idx($t, 'line')),
           $e->getTrace(),
@@ -494,7 +504,7 @@ final class ExpectObj extends Assert {
       $this->assertContains(
         $expected_exception_message,
         $message,
-        $desc
+        $desc ?? '',
       );
     }
   }
