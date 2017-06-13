@@ -196,7 +196,11 @@ final class ExpectObj extends Assert {
   public function toContain($needle, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertContains($needle, $this->vars->firstValue(), $msg);
+    $this->assertContains(
+      $needle,
+      not_hack_array($this->vars->firstValue()),
+      $msg,
+    );
   }
 
   /**
@@ -380,7 +384,11 @@ final class ExpectObj extends Assert {
   public function toNotContain($expected, string $msg = '', ...): void {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotContains($expected, $this->vars->firstValue(), $msg);
+    $this->assertNotContains(
+      $expected,
+      not_hack_array($this->vars->firstValue()),
+      $msg,
+    );
   }
 
   /**

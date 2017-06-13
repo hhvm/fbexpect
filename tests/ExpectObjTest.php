@@ -123,7 +123,6 @@ final class ExpectObjTest extends TestCase {
       array('toNotBeNull', null),
       array('toBeEmpty', 1),
       array('toNotBeEmpty', 0),
-      array('toBeInstanceOf', $o, 'AutomockerTestClass'),
       array('toNotBeInstanceOf', $o, 'stdClass'),
       array('toBeType', 'a', 'int'),
       array('toNotBeType', 1, 'int'),
@@ -173,7 +172,9 @@ final class ExpectObjTest extends TestCase {
     );
   }
 
-  <<DataProvider('provideFailureCases')>>
+  /**
+   * @dataProvider provideFailureCases
+   */
   public function testBasicFailure(
       $func,
       $values,
@@ -186,7 +187,9 @@ final class ExpectObjTest extends TestCase {
     }
   }
 
-  <<DataProvider('provideFailureCases')>>
+  /**
+   * @dataProvider provideFailureCases
+   */
   public function testFailureWithCustomMsg(
       $func,
       $value,
@@ -259,7 +262,7 @@ final class ExpectObjTest extends TestCase {
         throw new $class();
       }
     )->toThrowWhenCalledWith(
-      array('ExpectObjTestException'),
+      array(ExpectObjTestException::class),
       ExpectObjTestException::class
     );
   }
