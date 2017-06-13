@@ -57,8 +57,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
         'class or interface name',
       );
     }
-    /* HH_FIXME[2049] unbound name */
-    $constraint = \PHPUnit_Framework_Constraint_Not($constraint);
+    $constraint = new \PHPUnit_Framework_Constraint_Not($constraint);
     $this->assertThat($actual, $constraint, $message);
   }
 

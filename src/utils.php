@@ -9,6 +9,8 @@
  *
  */
 
+namespace Facebook\FBExpect;
+
 function is_any_array(mixed $value): bool {
   return (
     is_array($value) ||
@@ -33,7 +35,15 @@ function is_type(string $value): bool {
       return true;
     default:
       /* HH_FIXME[2049] unbound name */
+      if (class_exists(\PHPUnit_Util_Type::class)) {
+        // PHPUnit 5
+      /* HH_FIXME[2049] unbound name */
+        return \PHPUnit_Util_Type::isType($value);
+      } else {
+        // PHPUnit 6
+      /* HH_FIXME[2049] unbound name */
       /* HH_FIXME[4107] unbound name */
-      return \PHPUnit\Util\Type\isType($value);
+        return \PHPUnit\Util\Type\isType($value);
+      }
   }
 }

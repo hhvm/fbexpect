@@ -1,8 +1,13 @@
 {
-    "require-dev": {
-    },
-    "require": {
-        "phpunit/phpunit": "^5.7",
-        "91carriage/phpunit-hhi": "^5.7"
-    }
+  "autoload": {
+    "classmap": [ "src/" ],
+    "files": [
+      "src/expect.php",
+      "src/utils.php"
+    ]
+  },
+  "require": {
+    "phpunit/phpunit": "^5.7",
+    "91carriage/phpunit-hhi": "^5.7"
+  }
 }
