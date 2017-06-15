@@ -11,7 +11,7 @@
 
 namespace Facebook\FBExpect;
 
-final class ExpectObj extends Assert {
+final class ExpectObj<T> extends Assert {
   public function __construct(private ImmVector<mixed> $vars) { }
 
   /**************************************
@@ -152,11 +152,11 @@ final class ExpectObj extends Assert {
   }
 
   // Asserts: $actual instanceof $type
-  public function toBeInstanceOf<T>(
-    classname<T> $class_or_interface,
+  public function toBeInstanceOf<Tclass>(
+    classname<Tclass> $class_or_interface,
     string $msg = '',
     ...
-  ): T {
+  ): Tclass {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $obj = $this->vars->firstValue();
@@ -324,10 +324,12 @@ final class ExpectObj extends Assert {
   }
 
   // Asserts: $actual !== null
-  public function toNotBeNull(string $msg = '', ...) {
+  public function toNotBeNull<Tv>(string $msg = '', ...): Tv where T = ?Tv {
     $msg = vsprintf($msg, array_slice(func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
-    $this->assertNotNull($this->vars->firstValue(), $msg);
+    $val = $this->vars->firstValue();
+    $this->assertNotNull($val, $msg);
+    return /* HH_IGNORE_ERROR[4110] */ $val;
   }
 
   /**
@@ -470,8 +472,8 @@ final class ExpectObj extends Assert {
    *   expect(function() { invariant_violation('fail'); })
    *     ->toThrow(InvariantViolationException::class, 'fail');
    */
-  public function toThrow<T as \Exception>(
-    classname<T> $exception_class,
+  public function toThrow<Tclass as \Exception>(
+    classname<Tclass> $exception_class,
     ?string $expected_exception_message = null,
     ?string $msg = null,
     ...
@@ -495,9 +497,9 @@ final class ExpectObj extends Assert {
    *     function($a) { if ($a == 'foo') { invariant_violation('fail'); }}
    *   )->toThrowWhenCalledWith(array('foo'), 'InvariantViolationException');
    */
-  public function toThrowWhenCalledWith<T as \Exception>(
+  public function toThrowWhenCalledWith<Tclass as \Exception>(
     array $args,
-    classname<T> $exception_class,
+    classname<Tclass> $exception_class,
     ?string $expected_exception_message = null,
     ?string $desc = null
   ): void {
@@ -534,9 +536,9 @@ final class ExpectObj extends Assert {
     );
   }
 
-  private function tryCallWithArgsReturnException<T as \Exception>(
+  private function tryCallWithArgsReturnException<Tclass as \Exception>(
     array $args,
-    classname<T> $expected_exception_type,
+    classname<Tclass> $expected_exception_type,
   ) {
     try {
       $callable = count($this->vars) == 1 ? $this->vars->firstValue() : $this->vars;

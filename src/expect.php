@@ -31,6 +31,6 @@ namespace Facebook\FBExpect;
  *   - Function Exception Assertions
  *   - Mock Object Asserts
  */
-function expect(mixed ...$args): ExpectObj {
-  return new ExpectObj(new ImmVector($args));
+function expect<T>(T $obj, mixed ...$args): ExpectObj<T> {
+  return new ExpectObj(new ImmVector(func_get_args()));
 }

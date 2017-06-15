@@ -341,4 +341,10 @@ final class ExpectObjTest extends TestCase {
     $x = expect($x)->toBeInstanceOf(\Exception::class);
     expect($x->getMessage())->toBeSame('foo');
   }
+
+  public function testNotNull(): void {
+    $x = ((): ?\Exception ==> new \Exception('foo'))();
+    $x = expect($x)->toNotBeNull();
+    expect($x->getMessage())->toBeSame('foo');
+  }
 }
