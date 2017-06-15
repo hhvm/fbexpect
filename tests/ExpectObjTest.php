@@ -301,8 +301,6 @@ final class ExpectObjTest extends TestCase {
   }
 
   public function testToHaveSameShapeAsFailure(): void {
-    $this->expectException(ExpectationFailedException::class);
-
     expect(
       () ==> {
         expect(shape(
