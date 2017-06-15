@@ -335,4 +335,10 @@ final class ExpectObjTest extends TestCase {
     )->toThrow(ExpectationFailedException::class);
   }
 
+  public function testInstanceOfTyping(): void {
+    // This test is primarily for the typechecker, not the runtime
+    $x = ((): mixed ==> new \Exception('foo'))();
+    $x = expect($x)->toBeInstanceOf(\Exception::class);
+    expect($x->getMessage())->toBeSame('foo');
+  }
 }
