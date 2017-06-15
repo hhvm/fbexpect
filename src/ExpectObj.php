@@ -152,18 +152,20 @@ final class ExpectObj extends Assert {
   }
 
   // Asserts: $actual instanceof $type
-  public function toBeInstanceOf(
-    $class_or_interface,
+  public function toBeInstanceOf<T>(
+    classname<T> $class_or_interface,
     string $msg = '',
     ...
-  ): void {
+  ): T {
     $msg = vsprintf($msg, array_slice(func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
+    $obj = $this->vars->firstValue();
     $this->assertInstanceOf(
       $class_or_interface,
-      $this->vars->firstValue(),
-      $msg
+      $obj,
+      $msg,
     );
+    return /* HH_IGNORE_ERROR[4110] */ $obj;
   }
 
   // Asserts: $actual matches $expected regular expression
@@ -468,8 +470,8 @@ final class ExpectObj extends Assert {
    *   expect(function() { invariant_violation('fail'); })
    *     ->toThrow(InvariantViolationException::class, 'fail');
    */
-  public function toThrow(
-    string $exception_class,
+  public function toThrow<T as \Exception>(
+    classname<T> $exception_class,
     ?string $expected_exception_message = null,
     ?string $msg = null,
     ...
@@ -493,9 +495,9 @@ final class ExpectObj extends Assert {
    *     function($a) { if ($a == 'foo') { invariant_violation('fail'); }}
    *   )->toThrowWhenCalledWith(array('foo'), 'InvariantViolationException');
    */
-  public function toThrowWhenCalledWith(
+  public function toThrowWhenCalledWith<T as \Exception>(
     array $args,
-    string $exception_class,
+    classname<T> $exception_class,
     ?string $expected_exception_message = null,
     ?string $desc = null
   ): void {
@@ -519,65 +521,6 @@ final class ExpectObj extends Assert {
     }
   }
 
-  /**
-   * Asserts: Function throws CodedException with given code.
-   *          If API code and error data are given (optional), assert the
-   *          CodedException has that API code and error data.
-   */
-  public function toThrowCodedException(
-    int $code,
-    ?int $api_code = null,
-    $error_data = null,
-    ?string $desc = null,
-  ): void {
-    $this->toThrowCodedExceptionWhenCalledWith(
-      array(),
-      $code,
-      $api_code,
-      $error_data,
-      $desc
-    );
-  }
-
-  /**
-   * Asserts: Function throws CodedException with given code when called with
-   *          the given args. If API code and error data are given (optional)
-   *          assert the CodedException has that API code and error data.
-   */
-  public function toThrowCodedExceptionWhenCalledWith(
-    array $args,
-    int $code,
-    ?int $api_code = null,
-    $error_data = null,
-    ?string $desc = null,
-  ): void {
-    $exception = $this->tryCallWithArgsReturnException($args, 'CodedException');
-
-    if (!$exception) {
-      $this->fail($desc ?: "CodedException $code wasn't thrown");
-    }
-
-    expect($exception->getErrorCode())->toEqual(
-      $code,
-      $desc ?: 'A CodedException was thrown, but it didn\'t have '.
-        'the expected error code',
-    );
-
-    if ($api_code !== null) {
-      expect($exception->getApiErrorCode())->toEqual(
-        $api_code,
-        $desc ?: 'The CodedException didn\'t have the expected api code',
-      );
-    }
-
-    if ($error_data !== null) {
-      expect($exception->getErrorData())->toEqual(
-        $error_data,
-        $desc ?: 'The CodedException didn\'t have the expected error data',
-      );
-    }
-  }
-
   /***************************************
    ***************************************
    **** Private implementation details ***
@@ -591,9 +534,9 @@ final class ExpectObj extends Assert {
     );
   }
 
-  private function tryCallWithArgsReturnException(
+  private function tryCallWithArgsReturnException<T as \Exception>(
     array $args,
-    string $expected_exception_type,
+    classname<T> $expected_exception_type,
   ) {
     try {
       $callable = count($this->vars) == 1 ? $this->vars->firstValue() : $this->vars;
