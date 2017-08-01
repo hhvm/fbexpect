@@ -1,4 +1,6 @@
 {
+  "name": "facebook/fbexpect",
+  "description": "Unit test helpers for Facebook projects",
   "autoload": {
     "classmap": [ "src/" ],
     "files": [
