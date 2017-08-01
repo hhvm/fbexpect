@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hhvm/fbexpect.svg?branch=master)](https://travis-ci.org/hhvm/fbexpect)
+
 # FBExpect
 
 FBExpect is a unit testing utility built on top of PHPUnit. The primary goal of
