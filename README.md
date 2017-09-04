@@ -18,7 +18,7 @@ It is linguistically clearer which value is the expected value and which is the
 actual value:
 
 ```Hack
-use Facebook\FBExpect\expect;
+use function Facebook\FBExpect\expect;
 
 // PHPUnit
 $this->assertSame($a, $b);
@@ -30,7 +30,7 @@ expect($b)->toBeSame($a);
 ### Type Refinement
 
 ```Hack
-use Facebook\FBExpect\expect;
+use function Facebook\FBExpect\expect;
 
 // PHPUnit
 $this->assertNotNull($x); // Actual test
