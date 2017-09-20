@@ -11,7 +11,7 @@
 
 namespace Facebook\FBExpect;
 
-final class ExpectObj<T> extends Assert {
+class ExpectObj<T> extends Assert {
   public function __construct(private ImmVector<mixed> $vars) { }
 
   /**************************************
