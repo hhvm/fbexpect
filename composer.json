@@ -9,6 +9,7 @@
     ]
   },
   "require": {
+    "hhvm": "^3.21",
     "phpunit/phpunit": "^5.7",
     "91carriage/phpunit-hhi": "^5.7"
   }
