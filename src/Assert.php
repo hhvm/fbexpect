@@ -96,8 +96,8 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
     array $actual,
     string $msg = '',
   ): void {
-    self::sortArrayRecursive($expected);
-    self::sortArrayRecursive($actual);
+    self::sortArrayRecursive(&$expected);
+    self::sortArrayRecursive(&$actual);
     $this->assertEquals($expected, $actual, $msg);
   }
 
@@ -205,7 +205,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
   private static function sortArrayRecursive(array &$arr): void {
     foreach ($arr as $codemod_inserted_key => $i) {
       if (is_array($i)) {
-        self::sortArrayRecursive($i);
+        self::sortArrayRecursive(&$i);
       }
       $arr[$codemod_inserted_key] = $i;
     }
@@ -213,7 +213,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
 
   private static function sorted<T>(Traversable<T> $x): ImmVector<T> {
     $copy = Vector::fromItems($x);
-    sort($copy);
+    sort(&$copy);
     return $copy->toImmVector();
   }
 }
