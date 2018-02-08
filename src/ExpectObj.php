@@ -30,7 +30,7 @@ class ExpectObj<T> extends Assert {
    *          (string)$o1 == (string)$o2.
    */
   public function toEqual($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertEquals($expected, $this->vars->firstValue(), $msg);
   }
@@ -40,13 +40,13 @@ class ExpectObj<T> extends Assert {
    * and $expected are not within $delta of each other.
    */
   public function toEqualWithDelta($expected, float $delta, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 3));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 3));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertEquals($expected, $this->vars->firstValue(), $msg, $delta);
   }
 
   public function toAlmostEqual($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->toEqualWithDelta(
       $expected,
@@ -60,15 +60,15 @@ class ExpectObj<T> extends Assert {
    * Same as toEqual() except treats NAN as equal to itself.
    */
   public function toEqualWithNANEqual($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
 
     $actual = $this->vars->firstValue();
     if (
       is_float($expected) &&
       is_float($actual) &&
-      is_nan($expected) &&
-      is_nan($actual)
+      \is_nan($expected) &&
+      \is_nan($actual)
     ) {
       return;
     }
@@ -82,49 +82,49 @@ class ExpectObj<T> extends Assert {
    *          instance
    */
   public function toBeSame($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertSame($expected, $this->vars->firstValue(), $msg);
   }
 
    // Asserts: $actual === true
   public function toBeTrue(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertTrue($this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual === false
   public function toBeFalse(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertFalse($this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual === null
   public function toBeNull(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNull($this->vars->firstValue(), $msg);
   }
 
   // Asserts: empty($actual) == true
   public function toBeEmpty(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertEmpty($this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual > $expected
   public function toBeGreaterThan($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertGreaterThan($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual < $expected
   public function toBeLessThan($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertLessThan($expected, $this->vars->firstValue(), $msg);
   }
@@ -135,7 +135,7 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     ...
   ): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertLessThanOrEqual($expected, $this->vars->firstValue(), $msg);
   }
@@ -146,7 +146,7 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     ...
   ): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertGreaterThanOrEqual($expected, $this->vars->firstValue(), $msg);
   }
@@ -157,7 +157,7 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     ...
   ): Tclass {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $obj = $this->vars->firstValue();
     $this->assertInstanceOf(
@@ -170,7 +170,7 @@ class ExpectObj<T> extends Assert {
 
   // Asserts: $actual matches $expected regular expression
   public function toMatchRegExp($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertRegExp($expected, (string) $this->vars->firstValue(), $msg);
   }
@@ -183,7 +183,7 @@ class ExpectObj<T> extends Assert {
    * Example: expect($actual)->toBeType('string') would assert is_string($actual)
    */
   public function toBeType($type,  string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertType($type, $this->vars->firstValue(), $msg);
   }
@@ -196,7 +196,7 @@ class ExpectObj<T> extends Assert {
    * Note:   If $needle is an object, === will be used.
    */
   public function toContain($needle, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertContains(
       $needle,
@@ -210,7 +210,7 @@ class ExpectObj<T> extends Assert {
    * Note:   If $key is a Set, use assertContains.
    */
   public function toContainKey($key, string $msg = '', mixed ...$args): void {
-    $msg = vsprintf($msg, $args);
+    $msg = \vsprintf($msg, $args);
     $this->assertSingleArg(__FUNCTION__);
     $obj = $this->vars->firstValue();
     invariant(
@@ -219,7 +219,7 @@ class ExpectObj<T> extends Assert {
       'KeyedContainers, not %s.',
       print_type($obj),
     );
-    $this->assertTrue(array_key_exists($key, $obj), $msg);
+    $this->assertTrue(\array_key_exists($key, $obj), $msg);
   }
 
   /**
@@ -235,7 +235,7 @@ class ExpectObj<T> extends Assert {
    *  TODO: typehint $expected_subset to array and fix tests
    */
   public function toInclude($expected_subset, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertSubset($expected_subset, $this->vars->firstValue(), $msg);
   }
@@ -249,7 +249,7 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     mixed ...$args
   ): void {
-    $msg = vsprintf($msg, $args);
+    $msg = \vsprintf($msg, $args);
     $this->assertSingleArg(__FUNCTION__);
 
     $value = $this->vars->firstValue();
@@ -265,7 +265,7 @@ class ExpectObj<T> extends Assert {
    * regardless of order.
    */
   public function toHaveSameContentAs($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $value = $this->vars->firstValue();
     $this->assertInstanceOf(Traversable::class, $value);
@@ -277,7 +277,7 @@ class ExpectObj<T> extends Assert {
    * Asserts: That a traversable is sorted according to a given comparator.
    */
   public function toBeSortedBy($comparator, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
 
     $actual = $this->vars->firstValue();
@@ -296,7 +296,7 @@ class ExpectObj<T> extends Assert {
    * function.
    */
   public function toBeSortedByKey($key_extractor, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
 
     $actual = $this->vars->firstValue();
@@ -318,14 +318,14 @@ class ExpectObj<T> extends Assert {
 
   // Asserts: $actual != $expected
   public function toNotEqual($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotEquals($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: $actual !== null
   public function toNotBeNull<Tv>(string $msg = '', ...): Tv where T = ?Tv {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
     $val = $this->vars->firstValue();
     $this->assertNotNull($val, $msg);
@@ -341,7 +341,7 @@ class ExpectObj<T> extends Assert {
    *          !is_string($actual)
    */
   public function toNotBeType($type,  string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotType($type, $this->vars->firstValue(), $msg);
   }
@@ -352,14 +352,14 @@ class ExpectObj<T> extends Assert {
    *          instance
    */
   public function toNotBeSame($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotSame($expected, $this->vars->firstValue(), $msg);
   }
 
   // Asserts: empty($actual) != true
   public function toNotBeEmpty(string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 1));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotEmpty($this->vars->firstValue(), $msg);
   }
@@ -369,7 +369,7 @@ class ExpectObj<T> extends Assert {
     $class_or_interface,
     string $msg = '',
     ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotInstanceOf(
       $class_or_interface,
@@ -386,7 +386,7 @@ class ExpectObj<T> extends Assert {
    * Note:   If $needle is an object, === will be used.
    */
   public function toNotContain($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotContains(
       $expected,
@@ -400,7 +400,7 @@ class ExpectObj<T> extends Assert {
    * Note:   If $key is a Set, use assertContains.
    */
   public function toNotContainKey($key, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $obj = $this->vars->firstValue();
     invariant(
@@ -415,7 +415,7 @@ class ExpectObj<T> extends Assert {
 
   // Asserts: $actual does not match $expected regular expression
   public function toNotMatchRegExp($expected, string $msg = '', ...): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 2));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotRegExp($expected, (string) $this->vars->firstValue(), $msg);
   }
@@ -444,15 +444,15 @@ class ExpectObj<T> extends Assert {
     ?string $msg = null,
     mixed ...$args
   ): void {
-    $msg = vsprintf($msg, $args);
+    $msg = \vsprintf($msg, $args);
     $e = $this->tryCallWithArgsReturnException(array(), \Exception::class);
     if ($e !== null) {
-      $msg = sprintf(
+      $msg = \sprintf(
         "%s was thrown: %s\n%s",
-        get_class($e),
+        \get_class($e),
         $msg,
-        implode("\n  ", array_map(
-          $t ==> sprintf(  '%s: %s', idx($t, 'file'), idx($t, 'line')),
+        \implode("\n  ", \array_map(
+          $t ==> \sprintf(  '%s: %s', idx($t, 'file'), idx($t, 'line')),
           $e->getTrace(),
         )),
       );
@@ -478,7 +478,7 @@ class ExpectObj<T> extends Assert {
     ?string $msg = null,
     ...
   ): void {
-    $msg = vsprintf($msg, array_slice(func_get_args(), 3));
+    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 3));
     $this->toThrowWhenCalledWith(
       array(),
       $exception_class,
@@ -530,7 +530,7 @@ class ExpectObj<T> extends Assert {
    ***************************************/
   private function assertSingleArg(string $method) {
     invariant(
-      count($this->vars) === 1,
+      \count($this->vars) === 1,
       'Single arg expected for expect()->%s()',
       $method,
     );
@@ -541,8 +541,8 @@ class ExpectObj<T> extends Assert {
     classname<Tclass> $expected_exception_type,
   ) {
     try {
-      $callable = count($this->vars) == 1 ? $this->vars->firstValue() : $this->vars;
-      $returned = call_user_func_array($callable, $args);
+      $callable = \count($this->vars) == 1 ? $this->vars->firstValue() : $this->vars;
+      $returned = \call_user_func_array($callable, $args);
 
       if ($returned instanceof Awaitable) {
         $ret = \HH\Asio\join($returned);
@@ -552,7 +552,7 @@ class ExpectObj<T> extends Assert {
         $expected_exception_type,
         'Expected to throw "%s", but instead got <%s> with message "%s"',
         $expected_exception_type,
-        get_class($e),
+        \get_class($e),
         $e->getMessage(),
       );
       return $e;

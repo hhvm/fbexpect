@@ -22,7 +22,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
   ): void {
     if (is_type($expected)) {
       $constraint = new Constraint\IsType($expected);
-    } else if (class_exists($expected) || interface_exists($expected)) {
+    } else if (\class_exists($expected) || \interface_exists($expected)) {
       $constraint = new \PHPUnit_Framework_Constraint_IsInstanceOf(
         /* HH_IGNORE_ERROR[4110] is really a classname */ $expected,
       );
@@ -46,7 +46,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
   ): void {
     if (is_type($expected)) {
       $constraint = new Constraint\IsType($expected);
-    } else if (class_exists($expected) || interface_exists($expected)) {
+    } else if (\class_exists($expected) || \interface_exists($expected)) {
       $constraint = new \PHPUnit_Framework_Constraint_IsInstanceOf(
         /* HH_IGNORE_ERROR[4110] is really a classname */ $expected,
       );
@@ -70,7 +70,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
     foreach ($expected as $key => $value) {
       if (is_any_array($actual)) {
         $actual_value = idx($actual, $key);
-        $part = '['.var_export($key, true).']';
+        $part = '['.\var_export($key, true).']';
       } else if (is_object($actual)) {
         $actual_value = /* UNSAFE_EXPR */ $actual->$key;
         $part = "->$key";
@@ -159,7 +159,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
 
       if (($pair->count() === 2) && !$comparator($pair[0], $pair[1])) {
         $main_message = $message ?: 'Collection is not sorted';
-        $failure_detail = sprintf(
+        $failure_detail = \sprintf(
           'at pos %d, %s and %s are in the wrong order',
           $index,
           /* HH_IGNORE_ERROR[2049] unbound name */
@@ -213,7 +213,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
 
   private static function sorted<T>(Traversable<T> $x): ImmVector<T> {
     $copy = Vector::fromItems($x);
-    sort(&$copy);
+    \sort(&$copy);
     return $copy->toImmVector();
   }
 }

@@ -206,12 +206,12 @@ final class ExpectObjTest extends TestCase {
     $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
     $this->expectExceptionMessage('custom msg 1 2.1');
     if ($expected === self::EMPTY_VALUE) {
-      call_user_func_array(
+      \call_user_func_array(
         array(expect($value), $func),
         array('custom %s %d %f', 'msg', 1, 2.1),
       );
     } else {
-      call_user_func_array(
+      \call_user_func_array(
         array(expect($value), $func),
         array($expected, 'custom %s %d %f', 'msg', 1, 2.1),
       );

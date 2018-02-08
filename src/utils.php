@@ -30,9 +30,9 @@ function not_hack_array(mixed $value): mixed {
 
 function print_type(mixed $value): string {
   if (is_object($value) || $value instanceof \__PHP_Incomplete_Class) {
-    return get_class($value);
+    return \get_class($value);
   }
-  return gettype($value);
+  return \gettype($value);
 }
 
 function is_type(string $value): bool {
@@ -43,7 +43,7 @@ function is_type(string $value): bool {
       return true;
     default:
       /* HH_FIXME[2049] unbound name */
-      if (class_exists(\PHPUnit_Util_Type::class)) {
+      if (\class_exists(\PHPUnit_Util_Type::class)) {
         // PHPUnit 5
       /* HH_FIXME[2049] unbound name */
         return \PHPUnit_Util_Type::isType($value);

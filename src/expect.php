@@ -32,5 +32,5 @@ namespace Facebook\FBExpect;
  *   - Mock Object Asserts
  */
 function expect<T>(T $obj, mixed ...$args): ExpectObj<T> {
-  return new ExpectObj(new ImmVector(func_get_args()));
+  return new ExpectObj(new ImmVector(\func_get_args()));
 }
