@@ -56,4 +56,4 @@ having PHP7 mode disabled, it currently requires PHPUnit 5.
 
 ## License
 
-FBExpect is BSD-licensed. We also provide an additional patent grant.
+FBExpect is MIT-licensed.
