@@ -1,6 +1,7 @@
 {
   "name": "facebook/fbexpect",
   "description": "Unit test helpers for Facebook projects",
+  "license": "MIT",
   "autoload": {
     "classmap": [ "src/" ],
     "files": [
