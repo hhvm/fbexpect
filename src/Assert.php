@@ -196,6 +196,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
   ): void {
     $this->assertIsSorted(
       $collection,
+      /* HH_FIXME[4240] unsafe comparison (PHPism) */
       ($a,$b) ==> $key_extractor($a) <= $key_extractor($b),
       $message,
     );
