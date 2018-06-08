@@ -17,19 +17,13 @@ namespace Facebook\FBExpect;
  *
  *   expect($foo)->toEqual('bar'); // Assert $foo == 'bar'
  *
- * When expecting on a mock object, expect() takes two args:
- *
- *   // Assert $foo->bar() was called once
- *   expect($foo, 'bar')->wasCalledOnce();
- *
  * See full API in ExpectObj. Sections:
  *
  *   - Basic Value Assertions
  *   - Negated Basic Value Assertions
  *   - Function Call Assertions
  *   - Function Exception Assertions
- *   - Mock Object Asserts
  */
-function expect<T>(T $obj, mixed ...$args): ExpectObj<T> {
-  return new ExpectObj(new ImmVector(\func_get_args()));
+function expect<T>(T $obj): ExpectObj<T> {
+  return new ExpectObj($obj);
 }
