@@ -19,16 +19,21 @@ class ExpectObj<T> extends Assert {
    **************************************
    **************************************
    *
-   * Example Usage: expect($actual)->toEqual($expected)
+   * Example Usage: expect($actual)->toBeSame($expected)
    *
    */
+
+  <<__Deprecated("Use toBeSame() or toBePHPEqual()")>>
+  public function toEqual($expected, string $msg = '', ...$args): void {
+    $this->toBePHPEqual($expected, $msg, ...$args);
+  }
 
   /**
    * Asserts: Roughly $actual == $expected
    * Note:    Two objects are considered equal if
    *          (string)$o1 == (string)$o2.
    */
-  public function toEqual($expected, string $msg = '', ...): void {
+  public function toBePHPEqual($expected, string $msg = '', ...): void {
     $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertEquals($expected, $this->vars->firstValue(), $msg);
@@ -55,10 +60,23 @@ class ExpectObj<T> extends Assert {
     );
   }
 
+  <<__Deprecated('use toBePHPEqualWithNANEqual')>>
+  public function beEqualWithNANEqual(
+    mixed $expected,
+    string $msg = '',
+    ...$args
+  ): void {
+    $this->toBePHPEqualWithNANEqual($expected, $msg, ...$args);
+  }
+
   /**
    * Same as toEqual() except treats NAN as equal to itself.
    */
-  public function toEqualWithNANEqual($expected, string $msg = '', ...): void {
+  public function toBePHPEqualWithNANEqual(
+    $expected,
+    string $msg = '',
+    ...
+  ): void {
     $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
 
@@ -72,7 +90,7 @@ class ExpectObj<T> extends Assert {
       return;
     }
 
-    $this->toEqual($expected, '%s', $msg);
+    $this->toBePHPEqual($expected, '%s', $msg);
   }
 
   /**
@@ -315,8 +333,12 @@ class ExpectObj<T> extends Assert {
    **************************************
    **************************************/
 
-  // Asserts: $actual != $expected
-  public function toNotEqual($expected, string $msg = '', ...): void {
+  <<__Deprecated("Use toNotBeSame() or toNotBePHPEqual()")>>
+  public function toNotEqual($expected, string $msg = '', ...$args): void {
+    $this->toNotBePHPEqual($expected, $msg, ...$args);
+  }
+
+  public function toNotBePHPEqual($expected, string $msg = '', ...): void {
     $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
     $this->assertSingleArg(__FUNCTION__);
     $this->assertNotEquals($expected, $this->vars->firstValue(), $msg);

@@ -27,8 +27,8 @@ final class ExpectObjTest extends TestCase {
     $o = new \stdClass();
     $o2 = new \stdClass();
 
-    expect(1)->toEqual(1);
-    expect(true)->toNotEqual(false);
+    expect(1)->toBePHPEqual(1);
+    expect(true)->toNotBePHPEqual(false);
 
     expect(1)->toBeGreaterThan(0);
     expect(1)->toBeGreaterThanOrEqualTo(0);
@@ -91,11 +91,11 @@ final class ExpectObjTest extends TestCase {
 
   <<
     ExpectedException('InvariantViolationException'),
-    ExpectedExceptionMessage('Single arg expected for expect()->toEqual()')
+    ExpectedExceptionMessage('Single arg expected for expect()->toBePHPEqual()')
   >>
   public function testToEqualMultiArgs(): void {
     $this->expectException(InvariantException::class);
-    expect(1, 2)->toEqual(1);
+    expect(1, 2)->toBePHPEqual(1);
   }
 
   /**
@@ -108,8 +108,8 @@ final class ExpectObjTest extends TestCase {
   public function provideFailureCases() {
     $o = new \stdClass();
     return array(
-      array('toEqual', false, true),
-      array('toNotEqual', false, false),
+      array('toBePHPEqual', false, true),
+      array('toNotBePHPEqual', false, false),
       array('toBeGreaterThan', 1, 1),
       array('toBeLessThan', 1, 1),
       array('toBeGreaterThanOrEqualTo', 1, 2),
