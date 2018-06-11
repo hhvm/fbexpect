@@ -89,15 +89,6 @@ final class ExpectObjTest extends TestCase {
       ->toEqualWithDelta(array(1 => 3201.0499999974), 0.000000001);
   }
 
-  <<
-    ExpectedException('InvariantViolationException'),
-    ExpectedExceptionMessage('Single arg expected for expect()->toBePHPEqual()')
-  >>
-  public function testToEqualMultiArgs(): void {
-    $this->expectException(InvariantException::class);
-    expect(1, 2)->toBePHPEqual(1);
-  }
-
   /**
    * It's really important that test helpers fail correctly. Add custom expect
    * methods here in the form:
