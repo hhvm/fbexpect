@@ -43,9 +43,9 @@ class ExpectObj<T> extends Assert {
    * Float comparison can give false positives - this will only error if $actual
    * and $expected are not within $delta of each other.
    */
-  public function toEqualWithDelta($expected, float $delta, string $msg = '', ...): void {
+  public function toEqualWithDelta(num $expected, float $delta, string $msg = '', ...): void {
     $msg = \vsprintf($msg, \array_slice(\func_get_args(), 3));
-    $this->assertEquals($expected, $this->var, $msg, $delta);
+    $this->assertEqualsWithDelta($expected, $this->var, $delta, $msg);
   }
 
   public function toAlmostEqual($expected, string $msg = '', ...): void {
@@ -191,7 +191,7 @@ class ExpectObj<T> extends Assert {
   }
 
   /**
-   * Assert: For strings, strpos($actual, $needle) !== false
+   * Assert: For strings, Str\contains($actual, $needle) !== false
    *         For containers (array, Map, Set, etc) or objects which implement
    *         Traversable, iterate through $actual and see if any element ==
    *         $needle.
@@ -372,7 +372,7 @@ class ExpectObj<T> extends Assert {
   }
 
   /**
-   * Assert: For strings, strpos($actual, $needle) === false
+   * Assert: For strings, Str\contains($actual, $needle) !== false
    *         For containers (array, Map, Set, etc) or objects which implement
    *         Traversable, iterate through $actual and make sure there is no
    *         element for which $element == $needle.
@@ -497,7 +497,7 @@ class ExpectObj<T> extends Assert {
       $this->tryCallWithArgsReturnException($args, $exception_class);
 
     if (!$exception) {
-      $this->fail(
+      throw new \Exception(
         "$desc: Expected exception $exception_class wasn't thrown"
       );
     }

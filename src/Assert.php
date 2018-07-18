@@ -10,29 +10,310 @@
 
 namespace Facebook\FBExpect;
 
-abstract class Assert extends \PHPUnit\Framework\Assert {
+use namespace HH\Lib\Str;
+
+abstract class Assert {
+
+  public function assertSame($expected, $actual, string $message = ''): void {
+    if ($expected === $actual) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is the same as %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertNotSame(
+    $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if ($expected !== $actual) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is not the same as %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertEquals($expected, $actual, string $message = ''): void {
+    if ($actual == $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is equal to %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertEqualsWithDelta(
+    num $expected,
+    $actual,
+    float $delta,
+    string $message = '',
+  ): void {
+    if ($actual >= $expected - $delta && $actual <= $expected + $delta) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\n%s does not equal %f with delta %f",
+        $message,
+        $actual,
+        (float)$expected,
+        $delta,
+      ),
+    );
+  }
+
+  public function assertNotEquals(
+    $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if ($actual != $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is not equal to %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertTrue($condition, string $message = '') {
+    if ($condition === true) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is true",
+        $message,
+        \var_export($condition, true),
+      ),
+    );
+  }
+
+  public function assertFalse($condition, string $message = '') {
+    if ($condition === false) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is false",
+        $message,
+        \var_export($condition, true),
+      ),
+    );
+  }
+
+  public function assertNull($actual, string $message = '') {
+    if ($actual === null) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is null",
+        $message,
+        \var_export($actual, true),
+      ),
+    );
+  }
+
+  public function assertNotNull($actual, string $message = '') {
+    if ($actual !== null) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is not null",
+        $message,
+        \var_export($actual, true),
+      ),
+    );
+  }
+
+  public function assertEmpty($actual, string $message = '') {
+    if (empty($actual) == true) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is empty",
+        $message,
+        \var_export($actual, true),
+      ),
+    );
+  }
+
+  public function assertNotEmpty($actual, string $message = '') {
+    if (empty($actual) != true) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is not empty",
+        $message,
+        \var_export($actual, true),
+      ),
+    );
+  }
+
+  public function assertGreaterThan(
+    $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if ($actual > $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is greater than %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertLessThan(
+    $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if ($actual < $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is less than %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertGreaterThanOrEqual(
+    $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if ($actual >= $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is greater than or equal to %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertLessThanOrEqual(
+    $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if ($actual <= $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is less than or equal to %s",
+        $message,
+        \var_export($actual, true),
+        \var_export($expected, true),
+      ),
+    );
+  }
+
+  public function assertInstanceOf(
+    string $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if (!\class_exists($expected) && !\interface_exists($expected)) {
+      throw new InvalidArgumentException('Invalid class or interface name');
+    }
+    if ($actual instanceof $expected) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is an instance of %s",
+        $message,
+        \var_export($actual, true),
+        $expected,
+      ),
+    );
+  }
+
+  public function assertNotInstanceOf(
+    string $expected,
+    $actual,
+    string $message = '',
+  ): void {
+    if (!\class_exists($expected) && !\interface_exists($expected)) {
+      throw new InvalidArgumentException('Invalid class or interface name');
+    }
+    if (!($actual instanceof $expected)) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s is not an instance of %s",
+        $message,
+        \var_export($actual, true),
+        $expected,
+      ),
+    );
+  }
+
   /**
    * Asserts that a variable is of a given type
    */
   public function assertType(
     string $expected,
-    mixed $actual,
+    $actual,
     string $message = '',
   ): void {
     if (is_type($expected)) {
-      $constraint = new Constraint\IsType($expected);
+      if ((new Constraint\IsType($expected))->matches($actual)) {
+        return;
+      }
+      throw new ExpectationFailedException(
+        Str\format(
+          "%s\nFailed asserting that %s is type %s",
+          $message,
+          \var_export($actual, true),
+          $expected,
+        ),
+      );
     } else if (\class_exists($expected) || \interface_exists($expected)) {
-      $constraint = new \PHPUnit_Framework_Constraint_IsInstanceOf(
-        /* HH_IGNORE_ERROR[4110] is really a classname */ $expected,
-      );
-    } else {
-      /* HH_FIXME[2049] unbound name */
-      throw \PHPUnit\Util\InvalidArgumentHelper::factory(
-        1,
-        'class or interface name',
-      );
+      $this->assertInstanceOf($expected, $actual, $message);
     }
-    $this->assertThat($actual, $constraint, $message);
+    throw new InvalidArgumentException('Invalid type');
   }
 
   /**
@@ -40,24 +321,143 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
    */
   public function assertNotType(
     string $expected,
-    mixed $actual,
+    $actual,
     string $message = '',
   ): void {
     if (is_type($expected)) {
-      $constraint = new Constraint\IsType($expected);
-    } else if (\class_exists($expected) || \interface_exists($expected)) {
-      $constraint = new \PHPUnit_Framework_Constraint_IsInstanceOf(
-        /* HH_IGNORE_ERROR[4110] is really a classname */ $expected,
+      if (!(new Constraint\IsType($expected))->matches($actual)) {
+        return;
+      }
+      throw new ExpectationFailedException(
+        Str\format(
+          "%s\nFailed asserting that %s is not type %s",
+          $message,
+          \var_export($actual, true),
+          $expected,
+        ),
       );
+    } else if (\class_exists($expected) || \interface_exists($expected)) {
+      $this->assertNotInstanceOf($expected, $actual, $message);
+    }
+    throw new InvalidArgumentException('Invalid type');
+  }
+
+  public function assertContains(
+    $needle,
+    $haystack,
+    string $message = '',
+    bool $ignoreCase = false,
+  ): void {
+    if (
+      \is_array($haystack) ||
+      (\is_object($haystack) && $haystack instanceof Traversable)
+    ) {
+      if (new Constraint\TraversableContains($needle)->matches($haystack)) {
+        return;
+      }
+    } elseif (\is_string($haystack)) {
+      if (!\is_string($needle)) {
+        throw new InvalidArgumentException(
+          'If haystack is string, needle must be string',
+        );
+      }
+      if ($ignoreCase) {
+        if (Str\contains_ci($haystack, $needle)) {
+          return;
+        }
+      } else if (Str\contains($haystack, $needle)) {
+        return;
+      }
     } else {
-      /* HH_FIXME[2049] unbound name */
-      throw \PHPUnit\Util\InvalidArgumentHelper::factory(
-        1,
-        'class or interface name',
+      throw new InvalidArgumentException(
+        'Haystack must be an array, traversable or string',
       );
     }
-    $constraint = new \PHPUnit_Framework_Constraint_Not($constraint);
-    $this->assertThat($actual, $constraint, $message);
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s contains %s",
+        $message,
+        \var_export($haystack, true),
+        \var_export($needle, true),
+      ),
+    );
+  }
+
+  public function assertNotContains(
+    $needle,
+    $haystack,
+    string $message = '',
+    bool $ignoreCase = false,
+  ): void {
+    if (
+      \is_array($haystack) ||
+      (\is_object($haystack) && $haystack instanceof Traversable)
+    ) {
+      if (!(new Constraint\TraversableContains($needle)->matches($haystack))) {
+        return;
+      }
+    } elseif (\is_string($haystack)) {
+      if (!\is_string($needle)) {
+        throw new InvalidArgumentException(
+          'If haystack is string, needle must be string',
+        );
+      }
+      if ($ignoreCase) {
+        if (!Str\contains_ci($haystack, $needle)) {
+          return;
+        }
+      } else if (!Str\contains($haystack, $needle)) {
+        return;
+      }
+    } else {
+      throw new InvalidArgumentException(
+        'Haystack must be an array, traversable or string',
+      );
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s does not contain %s",
+        $message,
+        \var_export($haystack, true),
+        \var_export($needle, true),
+      ),
+    );
+  }
+
+  public function assertRegExp(
+    string $expected,
+    string $actual,
+    string $message = '',
+  ) {
+    if (\preg_match($expected, $actual) === 1) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s matches PCRE pattern %s",
+        $message,
+        $actual,
+        $expected,
+      ),
+    );
+  }
+
+  public function assertNotRegExp(
+    string $expected,
+    string $actual,
+    string $message = '',
+  ) {
+    if (\preg_match($expected, $actual) === 0) {
+      return;
+    }
+    throw new ExpectationFailedException(
+      Str\format(
+        "%s\nFailed asserting that %s does not match PCRE pattern %s",
+        $message,
+        $actual,
+        $expected,
+      ),
+    );
   }
 
   public function assertSubset(
@@ -80,7 +480,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
 
       if (is_any_array($value) || is_object($value)) {
         $this->assertSubset($value, $actual_value, $msg, $path.$part);
-        } else {
+      } else {
         $this->assertEquals($value, $actual_value, $msg."\nKey: $path$part");
       }
     }
@@ -131,7 +531,7 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
    */
   public function assertIsSorted<Tv>(
     Traversable<Tv> $collection,
-    (function(Tv,Tv) : bool) $comparator,
+    (function(Tv, Tv): bool) $comparator,
     string $message = '',
   ): void {
     // Note: the way we maintain the pair of values to be compared may seem
@@ -161,13 +561,12 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
         $failure_detail = \sprintf(
           'at pos %d, %s and %s are in the wrong order',
           $index,
-          /* HH_IGNORE_ERROR[2049] unbound name */
-          \PHPUnit\Util\Type::toString($pair[0]),
-          /* HH_IGNORE_ERROR[2049] unbound name */
-          \PHPUnit\Util\Type::toString($pair[1]),
+          \var_export($pair[0], true),
+          \var_export($pair[1], true),
         );
 
-        $this->fail($main_message . ': ' . $failure_detail);
+        throw
+          new ExpectationFailedException($main_message.': '.$failure_detail);
       }
 
       $index++;
@@ -191,13 +590,13 @@ abstract class Assert extends \PHPUnit\Framework\Assert {
    */
   public function assertIsSortedByKey<Tv>(
     Traversable<Tv> $collection,
-    (function(Tv) : mixed) $key_extractor,
+    (function(Tv): mixed) $key_extractor,
     string $message = '',
   ): void {
     $this->assertIsSorted(
       $collection,
       /* HH_FIXME[4240] unsafe comparison (PHPism) */
-      ($a,$b) ==> $key_extractor($a) <= $key_extractor($b),
+      ($a, $b) ==> $key_extractor($a) <= $key_extractor($b),
       $message,
     );
   }
