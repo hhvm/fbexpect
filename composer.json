@@ -3,17 +3,11 @@
   "description": "Unit test helpers for Facebook projects",
   "license": "MIT",
   "require-dev": {
-    "hhvm/hacktest": "dev-master"
+    "hhvm/hacktest": "^0.1"
   },
   "require": {
     "hhvm": "^3.23",
     "hhvm/hsl": "^3.26",
     "hhvm/hhvm-autoload": "^1.6"
-  },
-  "repositories": [
-     {
-         "type": "vcs",
-         "url":  "git@github.com:hhvm/hacktest.git"
-     }
-   ]
+  }
 }
