@@ -352,7 +352,7 @@ abstract class Assert {
       \is_array($haystack) ||
       (\is_object($haystack) && $haystack instanceof Traversable)
     ) {
-      if (new Constraint\TraversableContains($needle)->matches($haystack)) {
+      if ((new Constraint\TraversableContains($needle))->matches($haystack)) {
         return;
       }
     } elseif (\is_string($haystack)) {
