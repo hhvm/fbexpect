@@ -2,16 +2,12 @@
   "name": "facebook/fbexpect",
   "description": "Unit test helpers for Facebook projects",
   "license": "MIT",
-  "autoload": {
-    "classmap": [ "src/" ],
-    "files": [
-      "src/expect.php",
-      "src/utils.php"
-    ]
+  "require-dev": {
+    "hhvm/hacktest": "^0.1"
   },
   "require": {
     "hhvm": "^3.23",
-    "phpunit/phpunit": "^5.7",
-    "91carriage/phpunit-hhi": "^5.7"
+    "hhvm/hsl": "^3.26",
+    "hhvm/hhvm-autoload": "^1.6"
   }
 }

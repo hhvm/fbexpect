@@ -10,16 +10,14 @@
 
 namespace Facebook\FBExpect;
 
-use PHPUnit\Framework\TestCase;
-
-use \PHPUnit_Framework_ExpectationFailedException as ExpectationFailedException;
+use type Facebook\HackTest\HackTestCase;
 
 final class ExpectObjTestException extends \Exception {}
 
 /**
  * Test expect() assertions
  */
-final class ExpectObjTest extends TestCase {
+final class ExpectObjTest extends HackTestCase {
 
   const EMPTY_VALUE = 'do not use this as a test value';
 
@@ -27,8 +25,9 @@ final class ExpectObjTest extends TestCase {
     $o = new \stdClass();
     $o2 = new \stdClass();
 
-    expect(1)->toBePHPEqual(1);
+    expect(1)->toBePHPEqual(1, 'custom msg');
     expect(true)->toNotBePHPEqual(false);
+    expect(array(1, 2, 3))->toBePHPEqual(array(1, 2, 3));
 
     expect(1)->toBeGreaterThan(0);
     expect(1)->toBeGreaterThanOrEqualTo(0);
@@ -50,6 +49,9 @@ final class ExpectObjTest extends TestCase {
     expect($o)->toBeInstanceOf(\stdClass::class);
     expect(1)->toBeType('int');
     expect('a')->toNotBeType('int');
+    expect(vec[])->toNotBeType('array');
+    expect(dict[])->toBeType('dict');
+    expect(keyset[])->toBeType('keyset');
     expect(array(1, 2, 3))->toContain(2);
     expect(array(1, 2, 3))->toNotContain(7);
 
@@ -85,8 +87,19 @@ final class ExpectObjTest extends TestCase {
     expect(dict['k1' => 'v1', 'k2' => 'v2'])
       ->toInclude(dict['k1' => 'v1', 'k2' => 'v2']);
 
-    expect(array(1 => 3201.0499999973))
-      ->toEqualWithDelta(array(1 => 3201.0499999974), 0.000000001);
+    // regex
+    expect('haystack')->toMatchRegExp('/stack$/');
+    expect('haystack')->toNotMatchRegExp('/needle/');
+
+    // sorting
+    expect(array(1, 2, 3))->toBeSortedBy(function(int $prev, int $curr): bool {
+      if ($prev <= $curr) {
+        return true;
+      }
+      return false;
+    });
+
+    expect(2)->toEqualWithDelta(1.99, 0.01);
   }
 
   /**
@@ -166,14 +179,17 @@ final class ExpectObjTest extends TestCase {
    * @dataProvider provideFailureCases
    */
   public function testBasicFailure(
-      $func,
-      $values,
-      $expected = self::EMPTY_VALUE): void {
-    $this->expectException(ExpectationFailedException::class);
+    $func,
+    $values,
+    $expected = self::EMPTY_VALUE,
+  ): void {
     if ($expected === self::EMPTY_VALUE) {
-      call_user_func(array(expect($values), $func));
+      expect(() ==> call_user_func(array(expect($values), $func)))->toThrow(
+        ExpectationFailedException::class,
+      );
     } else {
-      call_user_func(array(expect($values), $func), $expected);
+      expect(() ==> call_user_func(array(expect($values), $func), $expected))
+        ->toThrow(ExpectationFailedException::class);
     }
   }
 
@@ -181,36 +197,44 @@ final class ExpectObjTest extends TestCase {
    * @dataProvider provideFailureCases
    */
   public function testFailureWithCustomMsg(
-      $func,
-      $value,
-      $expected = self::EMPTY_VALUE): void {
-    $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
-    $this->expectExceptionMessage('custom msg');
+    $func,
+    $value,
+    $expected = self::EMPTY_VALUE,
+  ): void {
+
     if ($expected === self::EMPTY_VALUE) {
-      call_user_func(array(expect($value), $func), 'custom msg');
+      expect(() ==> call_user_func(array(expect($value), $func), 'custom msg'))
+        ->toThrow(ExpectationFailedException::class, 'custom msg');
     } else {
-      call_user_func(array(expect($value), $func), $expected, 'custom msg');
+      expect(
+        () ==>
+          call_user_func(array(expect($value), $func), $expected, 'custom msg'),
+      )->toThrow(ExpectationFailedException::class, 'custom msg');
+      ;
     }
 
     // And with funky sprintfification
-    $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
-    $this->expectExceptionMessage('custom msg 1 2.1');
     if ($expected === self::EMPTY_VALUE) {
-      \call_user_func_array(
-        array(expect($value), $func),
-        array('custom %s %d %f', 'msg', 1, 2.1),
-      );
+      expect(
+        () ==> \call_user_func_array(
+          array(expect($value), $func),
+          array('custom %s %d %f', 'msg', 1, 2.1),
+        ),
+      )->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     } else {
-      \call_user_func_array(
-        array(expect($value), $func),
-        array($expected, 'custom %s %d %f', 'msg', 1, 2.1),
-      );
+      expect(
+        () ==> \call_user_func_array(
+          array(expect($value), $func),
+          array($expected, 'custom %s %d %f', 'msg', 1, 2.1),
+        ),
+      )->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     }
   }
 
   public function testAssertEqualsWithDeltaFailure(): void {
-    $this->expectException(ExpectationFailedException::class);
-    expect(3.14)->toEqualWithDelta(3.1, 0.0001);
+    expect(() ==> expect(3.14)->toEqualWithDelta(3.1, 0.0001))->toThrow(
+      ExpectationFailedException::class,
+    );
   }
 
   //
@@ -218,27 +242,44 @@ final class ExpectObjTest extends TestCase {
   //
   public function testToThrowWhenCalledWithSuccess(): void {
     expect(
-      function () { throw new \Exception(); }
+      function() {
+        throw new \Exception();
+      },
     )->toThrow(\Exception::class);
 
     expect(
-      function ($class) { throw new $class(); }
+      function($class) {
+        throw new $class();
+      },
     )->toThrowWhenCalledWith(
       array(ExpectObjTestException::class),
-      ExpectObjTestException::class
+      ExpectObjTestException::class,
     );
 
     expect(
-      function () { throw new ExpectObjTestException('test msg'); }
+      function() {
+        throw new ExpectObjTestException('test msg');
+      },
     )->toThrow(ExpectObjTestException::class, 'test msg');
   }
 
   public function testToThrowWithMessage(): void {
-    $this->expectException(ExpectationFailedException::class);
-    $this->expectExceptionMessage('wow');
     expect(
-      () ==> { throw new ExpectObjTestException('test 2'); }
-    )->toThrow(ExpectObjTestException::class, 'test error', 'wow');
+      function() {
+        expect(
+          () ==> {
+            throw new ExpectObjTestException('test 2');
+          },
+        )->toThrow(
+          ExpectObjTestException::class,
+          'test error',
+          'test message does not match',
+        );
+      },
+    )->toThrow(
+      ExpectationFailedException::class,
+      'test message does not match',
+    );
   }
 
   private static function stopEagerExecution(): RescheduleWaitHandle {
@@ -247,23 +288,24 @@ final class ExpectObjTest extends TestCase {
 
   public function testAwaitableFunctionGetsPrepped(): void {
     expect(
-      async function ($class) {
+      async function($class) {
         await self::stopEagerExecution();
         throw new $class();
-      }
+      },
     )->toThrowWhenCalledWith(
       array(ExpectObjTestException::class),
-      ExpectObjTestException::class
+      ExpectObjTestException::class,
     );
   }
 
   public function testToHaveSameShapeAsSuccess(): void {
     expect(
       () ==> {
-        expect(shape(
-          'a' => 5,
-          'b' => 4,
-          'c' => 3,
+        expect(
+          shape(
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
           ),
         )->toHaveSameShapeAs(
           shape(
@@ -279,24 +321,25 @@ final class ExpectObjTest extends TestCase {
   public function testToHaveSameContentAsSuccess(): void {
     expect(
       () ==> {
-        expect(Set {1, 2})->toHaveSameContentAs(Vector {2, 1});
-        expect(array(3))->toHaveSameContentAs(Map {1 => 3});
-      }
+        expect(Set { 1, 2 })->toHaveSameContentAs(Vector { 2, 1 });
+        expect(array(3))->toHaveSameContentAs(Map { 1 => 3 });
+      },
     )->notToThrow();
   }
 
   public function testToHaveSameContentAsFailure(): void {
-    $this->expectException(ExpectationFailedException::class);
-    expect(array(1, 2))->toHaveSameContentAs(Vector {1});
+    expect(() ==> expect(array(1, 2))->toHaveSameContentAs(Vector { 1 }))
+      ->toThrow(ExpectationFailedException::class);
   }
 
   public function testToHaveSameShapeAsFailure(): void {
     expect(
       () ==> {
-        expect(shape(
-          'a' => 5,
-          'b' => 4,
-          'c' => 3,
+        expect(
+          shape(
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
           ),
         )->toHaveSameShapeAs(
           shape(
@@ -309,10 +352,11 @@ final class ExpectObjTest extends TestCase {
     )->notToThrow();
     expect(
       () ==> {
-        expect(shape(
-          'a' => 5,
-          'b' => 4,
-          'c' => 3,
+        expect(
+          shape(
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
           ),
         )->toHaveSameShapeAs(
           shape(

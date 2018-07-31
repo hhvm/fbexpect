@@ -34,23 +34,10 @@ function print_type(mixed $value): string {
   return \gettype($value);
 }
 
-function is_type(string $value): bool {
-  switch ($value) {
-    case 'vec':
-    case 'dict':
-    case 'keyset':
-      return true;
-    default:
-      /* HH_FIXME[2049] unbound name */
-      if (\class_exists(\PHPUnit_Util_Type::class)) {
-        // PHPUnit 5
-      /* HH_FIXME[2049] unbound name */
-        return \PHPUnit_Util_Type::isType($value);
-      } else {
-        // PHPUnit 6
-      /* HH_FIXME[2049] unbound name */
-      /* HH_FIXME[4107] unbound name */
-        return \PHPUnit\Util\Type\isType($value);
-      }
-  }
+function is_iterable(mixed $value): bool {
+  return is_array($value) || (is_object($value) && ($value instanceof Traversable));
+}
+
+function is_type(mixed $value): bool {
+  return Constraint\IsType::getTypes()->containsKey($value);
 }
