@@ -2,9 +2,12 @@
 
 # FBExpect
 
-FBExpect is a unit testing utility built on top of PHPUnit. The primary goal of
-this project is to allow Facebook to release our existing unit tests for other
-projects, however it does have advantages for third-party Hack projects:
+FBExpect is a standalone unit testing utility based on the notion of assertions
+from PHPUnit. Starting with `2.x`, FBExpect no longer uses PHPUnit as a
+dependency, and instead directly implements the necessary assert logic for
+`expect` methods. The primary goal of this project is to allow Facebook to
+release our existing unit tests for other projects, however it does have
+advantages for third-party Hack projects:
 
  - clarity
  - type refinment for some assertions
