@@ -4,69 +4,31 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7eb603d3db179739caef4e0c57f87884",
+    "content-hash": "43e3170b372725dcd0a3a450d395419e",
     "packages": [
         {
-            "name": "fredemmott/hack-error-suppressor",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fredemmott/hack-error-suppressor.git",
-                "reference": "cb145c771b50f4f4eeec8c9cac4740df3d486a12"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fredemmott/hack-error-suppressor/zipball/cb145c771b50f4f4eeec8c9cac4740df3d486a12",
-                "reference": "cb145c771b50f4f4eeec8c9cac4740df3d486a12",
-                "shasum": ""
-            },
-            "require-dev": {
-                "91carriage/phpunit-hhi": "^5.6",
-                "phpunit/phpunit": "^5.7"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "ISC"
-            ],
-            "authors": [
-                {
-                    "name": "Fred Emmott",
-                    "email": "fred@fredemmott.co.uk"
-                }
-            ],
-            "description": "Suppress HHVM's automatic conversion of typechecker errors to fatals.",
-            "time": "2017-05-02T03:07:37+00:00"
-        },
-        {
             "name": "hhvm/hhvm-autoload",
-            "version": "v1.6.6",
+            "version": "1.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hhvm/hhvm-autoload.git",
-                "reference": "2808fe06fa850532270c54155c0bdab1bf0f67da"
+                "reference": "ec0fb2b944fc267f2f3726dbc29744593452b0d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hhvm/hhvm-autoload/zipball/2808fe06fa850532270c54155c0bdab1bf0f67da",
-                "reference": "2808fe06fa850532270c54155c0bdab1bf0f67da",
+                "url": "https://api.github.com/repos/hhvm/hhvm-autoload/zipball/ec0fb2b944fc267f2f3726dbc29744593452b0d4",
+                "reference": "ec0fb2b944fc267f2f3726dbc29744593452b0d4",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.0",
-                "fredemmott/hack-error-suppressor": "^1.0",
-                "hhvm": "^3.23"
+                "hhvm": "^3.28"
             },
             "replace": {
                 "facebook/hhvm-autoload": "1.*"
             },
             "require-dev": {
-                "91carriage/phpunit-hhi": "^5.5",
+                "91carriage/phpunit-hhi": "^5.7",
                 "facebook/fbexpect": "^1.1",
                 "phpunit/phpunit": "^5.5"
             },
@@ -91,38 +53,42 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
-            "time": "2018-06-12T20:21:07+00:00"
+            "time": "2018-08-23T22:25:14+00:00"
         },
         {
             "name": "hhvm/hsl",
-            "version": "v3.27.0",
+            "version": "v3.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hhvm/hsl.git",
-                "reference": "f43f027681402f0a6807325400a761106fa10274"
+                "reference": "483c5e98e2a389f11e36a643d5aef06b024b6eba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hhvm/hsl/zipball/f43f027681402f0a6807325400a761106fa10274",
-                "reference": "f43f027681402f0a6807325400a761106fa10274",
+                "url": "https://api.github.com/repos/hhvm/hsl/zipball/483c5e98e2a389f11e36a643d5aef06b024b6eba",
+                "reference": "483c5e98e2a389f11e36a643d5aef06b024b6eba",
                 "shasum": ""
             },
             "require": {
-                "hhvm": "^3.27.0",
+                "hhvm": "^3.28.0",
                 "hhvm/hhvm-autoload": "^1.4"
             },
             "require-dev": {
-                "91carriage/phpunit-hhi": "^5.7",
                 "facebook/fbexpect": "^1.0.0",
-                "phpunit/phpunit": "^5.7"
+                "hhvm/hacktest": "^0.2"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "The Hack Standard Library",
-            "time": "2018-06-07T01:25:22+00:00"
+            "time": "2018-08-27T18:09:57+00:00"
         }
     ],
     "packages-dev": [
@@ -276,23 +242,22 @@
         },
         {
             "name": "hhvm/hacktest",
-            "version": "v0.1",
+            "version": "0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hhvm/hacktest.git",
-                "reference": "483864c3def16eb4a5162086e2b59b301c69d2a9"
+                "reference": "f03361f1b5f3b376a764ab860661c4e8b96e8d7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hhvm/hacktest/zipball/483864c3def16eb4a5162086e2b59b301c69d2a9",
-                "reference": "483864c3def16eb4a5162086e2b59b301c69d2a9",
+                "url": "https://api.github.com/repos/hhvm/hacktest/zipball/f03361f1b5f3b376a764ab860661c4e8b96e8d7c",
+                "reference": "f03361f1b5f3b376a764ab860661c4e8b96e8d7c",
                 "shasum": ""
             },
             "require": {
-                "facebook/definition-finder": "^2.0",
                 "facebook/hh-apidoc": "^0.1",
                 "facebook/hh-clilib": "^1.0",
-                "hhvm": "^3.27.0",
+                "hhvm": "^3.28.0",
                 "hhvm/hhvm-autoload": "^1.6",
                 "hhvm/hsl": "^3.26",
                 "hhvm/type-assert": "^3.2"
@@ -312,20 +277,20 @@
                 "MIT"
             ],
             "description": "The Hack Test Library",
-            "time": "2018-07-18T17:07:07+00:00"
+            "time": "2018-08-24T23:45:22+00:00"
         },
         {
             "name": "hhvm/hhast",
-            "version": "v3.27.2",
+            "version": "v3.27.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hhvm/hhast.git",
-                "reference": "19b1fda576b0ff9323d997c7e837c919027ef921"
+                "reference": "6427a690f8436bf697972dd88e91705cbdce7fbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hhvm/hhast/zipball/19b1fda576b0ff9323d997c7e837c919027ef921",
-                "reference": "19b1fda576b0ff9323d997c7e837c919027ef921",
+                "url": "https://api.github.com/repos/hhvm/hhast/zipball/6427a690f8436bf697972dd88e91705cbdce7fbd",
+                "reference": "6427a690f8436bf697972dd88e91705cbdce7fbd",
                 "shasum": ""
             },
             "require": {
@@ -350,7 +315,7 @@
             "license": [
                 "MIT"
             ],
-            "time": "2018-07-17T15:35:27+00:00"
+            "time": "2018-08-06T23:04:30+00:00"
         },
         {
             "name": "hhvm/type-assert",
