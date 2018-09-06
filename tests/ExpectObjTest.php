@@ -381,4 +381,14 @@ final class ExpectObjTest extends HackTestCase {
     $x = expect($x)->toNotBeNull();
     expect($x->getMessage())->toBeSame('foo');
   }
+
+  public function testDifferingStringOutput(): void {
+    try {
+      expect("a\nb\nd\n")->toBeSame("a\nb\nc\n");
+    } catch (ExpectationFailedException $e) {
+      expect($e->getMessage())->toContain(" a\n b\n-c\n+d\n");
+      return;
+    }
+    self::fail("Should have thrown an exception");
+  }
 }

@@ -11,6 +11,7 @@
 namespace Facebook\FBExpect;
 
 use namespace HH\Lib\Str;
+use type Facebook\DiffLib\StringDiff;
 
 abstract class Assert {
 
@@ -18,6 +19,17 @@ abstract class Assert {
     if ($expected === $actual) {
       return;
     }
+
+    if ($expected is string && $actual is string) {
+      throw new ExpectationFailedException(
+        Str\format(
+          "%s\nFailed asserting that two strings are the same:\n%s\n",
+          $message,
+          StringDiff::lines($expected, $actual)->getUnifiedDiff(),
+        ),
+      );
+    }
+
     throw new ExpectationFailedException(
       Str\format(
         "%s\nFailed asserting that %s is the same as %s",
