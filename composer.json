@@ -8,6 +8,7 @@
   "require": {
     "hhvm": "^3.28",
     "hhvm/hsl": "^3.26",
-    "hhvm/hhvm-autoload": "^1.6"
+    "hhvm/hhvm-autoload": "^1.6",
+    "facebook/difflib": "^0.2.0"
   }
 }

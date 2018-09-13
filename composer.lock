@@ -4,8 +4,35 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce2205cf913315f0c23c522b908fa1d0",
+    "content-hash": "c44a8618d2fd0f77a869cbcde78d1b65",
     "packages": [
+        {
+            "name": "facebook/difflib",
+            "version": "v0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hhvm/difflib.git",
+                "reference": "2066396b8499ddc7d5a9436322c493e55379818b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hhvm/difflib/zipball/2066396b8499ddc7d5a9436322c493e55379818b",
+                "reference": "2066396b8499ddc7d5a9436322c493e55379818b",
+                "shasum": ""
+            },
+            "require": {
+                "hhvm/hsl": "^3.28"
+            },
+            "require-dev": {
+                "hhvm/hhast": "^3.28"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "time": "2018-09-06T17:19:19+00:00"
+        },
         {
             "name": "hhvm/hhvm-autoload",
             "version": "1.6.8",
