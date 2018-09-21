@@ -10,14 +10,14 @@
 
 namespace Facebook\FBExpect;
 
-use type Facebook\HackTest\HackTestCase;
+use type Facebook\HackTest\HackTest;
 
 final class ExpectObjTestException extends \Exception {}
 
 /**
  * Test expect() assertions
  */
-final class ExpectObjTest extends HackTestCase {
+final class ExpectObjTest extends HackTest {
 
   const EMPTY_VALUE = 'do not use this as a test value';
 
@@ -175,9 +175,8 @@ final class ExpectObjTest extends HackTestCase {
     );
   }
 
-  /**
-   * @dataProvider provideFailureCases
-   */
+  <<DataProvider('provideFailureCases')>>
+
   public function testBasicFailure(
     $func,
     $values,
@@ -193,9 +192,8 @@ final class ExpectObjTest extends HackTestCase {
     }
   }
 
-  /**
-   * @dataProvider provideFailureCases
-   */
+  <<DataProvider('provideFailureCases')>>
+
   public function testFailureWithCustomMsg(
     $func,
     $value,
