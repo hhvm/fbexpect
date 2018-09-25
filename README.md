@@ -2,22 +2,15 @@
 
 # FBExpect
 
-FBExpect is a standalone unit testing utility based on the notion of assertions
-from PHPUnit. Starting with `2.x`, FBExpect no longer uses PHPUnit as a
-dependency, and instead directly implements the necessary assert logic for
-`expect` methods. The primary goal of this project is to allow Facebook to
-release our existing unit tests for other projects, however it does have
-advantages for third-party Hack projects:
-
- - clarity
- - type refinment for some assertions
- - support for `vec`, `keyset`, and `dict` types
+FBExpect is a standalone unit testing utility based on the notion of assertions from PHPUnit. Starting with `2.x`, FBExpect no longer uses PHPUnit as a
+dependency, and instead implements the assertions directly, and is intentended
+for use with [HackTest].
 
 ## Examples
 
 ### Clarity
 
-It is linguistically clearer which value is the expected value and which is the
+It is linguistically clear which value is the expected value and which is the
 actual value:
 
 ```Hack
@@ -54,9 +47,8 @@ FBExpect is installed via composer:
 hhvm ~/composer require facebook/fbexpect
 ```
 
-FBExpect supports HHVM's PHP7 mode, however as it is also supports
-having PHP7 mode disabled, it currently requires PHPUnit 5.
-
 ## License
 
 FBExpect is MIT-licensed.
+
+[HackTest]: https://github.com/hhvm/hacktest/
