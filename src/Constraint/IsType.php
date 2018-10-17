@@ -19,26 +19,26 @@ class IsType {
   public static function getTypes(): ImmMap<string, self::TPredicate> {
     return ImmMap {
       'numeric' => ($x ==> \is_numeric($x)),
-      'integer' => ($x ==> \is_int($x)),
-      'int' => ($x ==> \is_int($x)),
-      'double' => ($x ==> \is_float($x)),
-      'float' => ($x ==> \is_float($x)),
-      'real' => ($x ==> \is_float($x)),
-      'string' => ($x ==> \is_string($x)),
-      'boolean' => ($x ==> \is_bool($x)),
-      'bool' => ($x ==> \is_bool($x)),
+      'integer' => ($x ==> ($x is int)),
+      'int' => ($x ==> ($x is int)),
+      'double' => ($x ==> ($x is float)),
+      'float' => ($x ==> ($x is float)),
+      'real' => ($x ==> ($x is float)),
+      'string' => ($x ==> ($x is string)),
+      'boolean' => ($x ==> ($x is bool)),
+      'bool' => ($x ==> ($x is bool)),
       'null' => ($x ==> $x === null),
       'array' => ($x ==> \is_array($x)),
       'object' => ($x ==> \is_object($x)),
       'resource' => (
-        $x ==> \is_resource($x) || \is_string(@\get_resource_type($x))
+        $x ==> ($x is resource) || (@\get_resource_type($x) is string)
       ),
       'scalar' => ($x ==> \is_scalar($x)),
       'callable' => ($x ==> \is_callable($x)),
       'iterable' => ($x ==> is_iterable($x)),
-      'vec' => ($x ==> is_vec($x)),
-      'dict' => ($x ==> is_dict($x)),
-      'keyset' => ($x ==> is_keyset($x)),
+      'vec' => ($x ==> ($x is vec<_>)),
+      'dict' => ($x ==> ($x is dict<_, _>)),
+      'keyset' => ($x ==> ($x is keyset<_>)),
     };
   }
 

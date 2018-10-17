@@ -79,8 +79,8 @@ class ExpectObj<T> extends Assert {
 
     $actual = $this->var;
     if (
-      is_float($expected) &&
-      is_float($actual) &&
+      ($expected is float) &&
+      ($actual is float) &&
       \is_nan($expected) &&
       \is_nan($actual)
     ) {

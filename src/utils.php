@@ -13,9 +13,9 @@ namespace Facebook\FBExpect;
 function is_any_array(mixed $value): bool {
   return (
     is_array($value) ||
-    is_dict($value) ||
-    is_vec($value) ||
-    is_keyset($value)
+    ($value is dict<_, _>) ||
+    ($value is vec<_>) ||
+    ($value is keyset<_>)
   );
 }
 
