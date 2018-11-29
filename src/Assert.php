@@ -12,6 +12,7 @@ namespace Facebook\FBExpect;
 
 use namespace HH\Lib\Str;
 use type Facebook\DiffLib\StringDiff;
+use type Facebook\HackTest\ExpectationFailedException;
 
 abstract class Assert {
 

@@ -10,7 +10,7 @@
 
 namespace Facebook\FBExpect;
 
-use type Facebook\HackTest\{DataProvider, HackTest};
+use type Facebook\HackTest\{DataProvider, ExpectationFailedException, HackTest};
 
 final class ExpectObjTestException extends \Exception {}
 
