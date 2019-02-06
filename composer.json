@@ -3,7 +3,7 @@
   "description": "Unit test helpers for Facebook projects",
   "license": "MIT",
   "require": {
-    "hhvm": "^3.28",
+    "hhvm": "^3.28|^4.0",
     "hhvm/hacktest": "^1.0",
     "hhvm/hsl": "^3.26",
     "hhvm/hhvm-autoload": "^1.6",
