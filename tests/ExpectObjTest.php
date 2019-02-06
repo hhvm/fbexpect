@@ -52,6 +52,10 @@ final class ExpectObjTest extends HackTest {
     expect(vec[])->toNotBeType('array');
     expect(dict[])->toBeType('dict');
     expect(keyset[])->toBeType('keyset');
+    expect(Set {})->toBeType('Container');
+    // vec[] is keyed by int type.
+    expect(vec[])->toBeType('KeyedContainer');
+    expect(dict[])->toBeType('KeyedContainer');
     expect(array(1, 2, 3))->toContain(2);
     expect(array(1, 2, 3))->toNotContain(7);
 

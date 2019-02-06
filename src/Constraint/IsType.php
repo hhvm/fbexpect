@@ -41,6 +41,8 @@ class IsType {
       'vec' => ($x ==> ($x is vec<_>)),
       'dict' => ($x ==> ($x is dict<_, _>)),
       'keyset' => ($x ==> ($x is keyset<_>)),
+      'Container' => ($x ==> ($x is Container<_>)),
+      'KeyedContainer' => ($x ==> ($x is KeyedContainer<_, _>)),
     };
   }
 
