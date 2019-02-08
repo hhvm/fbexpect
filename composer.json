@@ -5,8 +5,10 @@
   "require": {
     "hhvm": "^3.28|^4.0",
     "hhvm/hacktest": "^1.0",
-    "hhvm/hsl": "^3.26",
-    "hhvm/hhvm-autoload": "^1.6",
+    "hhvm/hsl": "^3.26|^4.0",
     "facebook/difflib": "^1.0.0"
+  },
+  "require-dev": {
+    "hhvm/hhvm-autoload": "^2.0"
   }
 }
