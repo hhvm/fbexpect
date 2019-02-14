@@ -51,20 +51,20 @@ class ExpectObj<T> extends Assert {
    * and $expected are not within $delta of each other.
    */
   public function toEqualWithDelta(
-    num $expected,
+    ?num $expected,
     float $delta,
     string $msg = '',
     mixed ...$args
-  ): void where T as num {
+  ): void where T as ?num {
     $msg = \vsprintf($msg, $args);
     $this->assertEqualsWithDelta($expected, $this->var, $delta, $msg);
   }
 
   public function toAlmostEqual(
-    num $expected,
+    ?num $expected,
     string $msg = '',
     mixed ...$args
-  ): void where T as num {
+  ): void where T as ?num {
     $msg = \vsprintf($msg, $args);
     $this->toEqualWithDelta(
       $expected,

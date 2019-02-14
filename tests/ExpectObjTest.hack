@@ -57,6 +57,8 @@ final class ExpectObjTest extends HackTest {
     expect(dict[])->toBeType('KeyedContainer');
     expect(array(1, 2, 3))->toContain(2);
     expect(array(1, 2, 3))->toNotContain(7);
+    expect(1)->toAlmostEqual(1);
+    expect(null)->toAlmostEqual(null);
 
     // hack arrays
     expect(keyset[1])->toContain(1);
@@ -134,6 +136,7 @@ final class ExpectObjTest extends HackTest {
       array('toNotBeType', 1, 'int'),
       array('toContain', array(1, 2, 3), 7),
       array('toNotContain', array(1, 2, 3), 2),
+      array('toAlmostEqual', null, 0.0),
 
       // hack arrays
       array('toContain', keyset[1, 2, 3], 7),

@@ -82,11 +82,35 @@ abstract class Assert {
   }
 
   public function assertEqualsWithDelta(
-    num $expected,
-    num $actual,
+    ?num $expected,
+    ?num $actual,
     float $delta,
     string $message = '',
   ): void {
+    if (($actual === null) && ($expected === null)) {
+      return;
+    }
+    if ($actual === null) {
+      throw new ExpectationFailedException(
+        Str\format(
+          "%s\nnull is not equal to %f (with delta %f)",
+          $message,
+          (float) $expected,
+          $delta,
+        )
+      );
+    }
+		if ($expected === null) {
+			throw new ExpectationFailedException(
+				Str\format(
+					"%s\n%f is not equal to null (with delta %f)",
+					$message,
+          (float) $actual,
+					$delta,
+				)
+			);
+		}
+
     if ($actual >= $expected - $delta && $actual <= $expected + $delta) {
       return;
     }
