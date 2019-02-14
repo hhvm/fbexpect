@@ -28,7 +28,7 @@ function not_hack_array(mixed $value): mixed {
 }
 
 function print_type(mixed $value): string {
-  if (is_object($value) || $value instanceof \__PHP_Incomplete_Class) {
+  if (is_object($value)) {
     return \get_class($value);
   }
   return \gettype($value);

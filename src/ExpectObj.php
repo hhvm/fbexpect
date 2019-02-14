@@ -34,8 +34,8 @@ class ExpectObj<T> extends Assert {
    * Note:    Two objects are considered equal if
    *          (string)$o1 == (string)$o2.
    */
-  public function toBePHPEqual($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBePHPEqual($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertEquals($expected, $this->var, $msg);
   }
 
@@ -43,13 +43,13 @@ class ExpectObj<T> extends Assert {
    * Float comparison can give false positives - this will only error if $actual
    * and $expected are not within $delta of each other.
    */
-  public function toEqualWithDelta(num $expected, float $delta, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 3));
+  public function toEqualWithDelta(num $expected, float $delta, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertEqualsWithDelta($expected, $this->var, $delta, $msg);
   }
 
-  public function toAlmostEqual($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toAlmostEqual($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->toEqualWithDelta(
       $expected,
       1.19e-07 * 4, // roughly equivalent to gtest
@@ -73,9 +73,9 @@ class ExpectObj<T> extends Assert {
   public function toBePHPEqualWithNANEqual(
     $expected,
     string $msg = '',
-    ...
+    ...$args
   ): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+    $msg = \vsprintf($msg, $args);
 
     $actual = $this->var;
     if (
@@ -95,44 +95,44 @@ class ExpectObj<T> extends Assert {
    * Note:    Two objects are considered the same if they reference the same
    *          instance
    */
-  public function toBeSame($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBeSame($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertSame($expected, $this->var, $msg);
   }
 
    // Asserts: $actual === true
-  public function toBeTrue(string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
+  public function toBeTrue(string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertTrue($this->var, $msg);
   }
 
   // Asserts: $actual === false
-  public function toBeFalse(string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
+  public function toBeFalse(string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertFalse($this->var, $msg);
   }
 
   // Asserts: $actual === null
-  public function toBeNull(string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
+  public function toBeNull(string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNull($this->var, $msg);
   }
 
   // Asserts: empty($actual) == true
-  public function toBeEmpty(string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
+  public function toBeEmpty(string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertEmpty($this->var, $msg);
   }
 
   // Asserts: $actual > $expected
-  public function toBeGreaterThan($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBeGreaterThan($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertGreaterThan($expected, $this->var, $msg);
   }
 
   // Asserts: $actual < $expected
-  public function toBeLessThan($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBeLessThan($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertLessThan($expected, $this->var, $msg);
   }
 
@@ -140,9 +140,9 @@ class ExpectObj<T> extends Assert {
   public function toBeLessThanOrEqualTo(
     $expected,
     string $msg = '',
-    ...
+    ...$args
   ): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+    $msg = \vsprintf($msg, $args);
     $this->assertLessThanOrEqual($expected, $this->var, $msg);
   }
 
@@ -150,9 +150,9 @@ class ExpectObj<T> extends Assert {
   public function toBeGreaterThanOrEqualTo(
     $expected,
     string $msg = '',
-    ...
+    ...$args
   ): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+    $msg = \vsprintf($msg, $args);
     $this->assertGreaterThanOrEqual($expected, $this->var, $msg);
   }
 
@@ -160,9 +160,9 @@ class ExpectObj<T> extends Assert {
   public function toBeInstanceOf<Tclass>(
     classname<Tclass> $class_or_interface,
     string $msg = '',
-    ...
+    ...$args
   ): Tclass {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+    $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     $this->assertInstanceOf(
       $class_or_interface,
@@ -173,8 +173,8 @@ class ExpectObj<T> extends Assert {
   }
 
   // Asserts: $actual matches $expected regular expression
-  public function toMatchRegExp($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toMatchRegExp($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertRegExp($expected, (string) $this->var, $msg);
   }
 
@@ -185,8 +185,8 @@ class ExpectObj<T> extends Assert {
    *
    * Example: expect($actual)->toBeType('string') would assert is_string($actual)
    */
-  public function toBeType($type,  string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBeType($type,  string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertType($type, $this->var, $msg);
   }
 
@@ -197,8 +197,8 @@ class ExpectObj<T> extends Assert {
    *         $needle.
    * Note:   If $needle is an object, === will be used.
    */
-  public function toContain($needle, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toContain($needle, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertContains(
       $needle,
       not_hack_array($this->var),
@@ -215,7 +215,7 @@ class ExpectObj<T> extends Assert {
     $obj = $this->var;
     invariant(
       $obj instanceof KeyedContainer,
-      'ERROR: expect(...)->toContainKey only can be applied to '.
+      'ERROR: expect(...$args)->toContainKey only can be applied to '.
       'KeyedContainers, not %s.',
       print_type($obj),
     );
@@ -234,8 +234,8 @@ class ExpectObj<T> extends Assert {
    *
    *  TODO: typehint $expected_subset to array and fix tests
    */
-  public function toInclude($expected_subset, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toInclude($expected_subset, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertSubset($expected_subset, $this->var, $msg);
   }
 
@@ -262,8 +262,8 @@ class ExpectObj<T> extends Assert {
    * Asserts: $actual has the same content as $expected, i.e. the same items
    * regardless of order.
    */
-  public function toHaveSameContentAs($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toHaveSameContentAs($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $value = $this->var;
     $this->assertInstanceOf(Traversable::class, $value);
     assert($value instanceof Traversable);
@@ -273,13 +273,13 @@ class ExpectObj<T> extends Assert {
   /**
    * Asserts: That a traversable is sorted according to a given comparator.
    */
-  public function toBeSortedBy($comparator, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBeSortedBy($comparator, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
 
     $actual = $this->var;
     invariant(
       $actual instanceof Traversable,
-      'ERROR: expect(...)->toBeSortedByKey only can be applied to '.
+      'ERROR: expect(...$args)->toBeSortedByKey only can be applied to '.
         'Traversables, not %s.',
       print_type($actual),
     );
@@ -291,13 +291,13 @@ class ExpectObj<T> extends Assert {
    * Asserts: That a traversable is sorted according to a given key extraction
    * function.
    */
-  public function toBeSortedByKey($key_extractor, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toBeSortedByKey($key_extractor, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
 
     $actual = $this->var;
     invariant(
       $actual instanceof Traversable,
-      'ERROR: expect(...)->toBeSortedByKey only can be applied to '.
+      'ERROR: expect(...$args)->toBeSortedByKey only can be applied to '.
         'Traversables, not %s.',
       print_type($actual),
     );
@@ -316,14 +316,14 @@ class ExpectObj<T> extends Assert {
     $this->toNotBePHPEqual($expected, $msg, ...$args);
   }
 
-  public function toNotBePHPEqual($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotBePHPEqual($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotEquals($expected, $this->var, $msg);
   }
 
   // Asserts: $actual !== null
-  public function toNotBeNull<Tv>(string $msg = '', ...): Tv where T = ?Tv {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
+  public function toNotBeNull<Tv>(string $msg = '', ...$args): Tv where T = ?Tv {
+    $msg = \vsprintf($msg, $args);
     $val = $this->var;
     $this->assertNotNull($val, $msg);
     return /* HH_IGNORE_ERROR[4110] */ $val;
@@ -337,8 +337,8 @@ class ExpectObj<T> extends Assert {
    * Example: expect($actual)->toNotBeType('string') would assert
    *          !is_string($actual)
    */
-  public function toNotBeType($type,  string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotBeType($type,  string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotType($type, $this->var, $msg);
   }
 
@@ -347,14 +347,14 @@ class ExpectObj<T> extends Assert {
    * Note:    Two objects are considered the same if they reference the same
    *          instance
    */
-  public function toNotBeSame($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotBeSame($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotSame($expected, $this->var, $msg);
   }
 
   // Asserts: empty($actual) != true
-  public function toNotBeEmpty(string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 1));
+  public function toNotBeEmpty(string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotEmpty($this->var, $msg);
   }
 
@@ -362,8 +362,8 @@ class ExpectObj<T> extends Assert {
   public function toNotBeInstanceOf(
     $class_or_interface,
     string $msg = '',
-    ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+    ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotInstanceOf(
       $class_or_interface,
       $this->var,
@@ -378,8 +378,8 @@ class ExpectObj<T> extends Assert {
    *         element for which $element == $needle.
    * Note:   If $needle is an object, === will be used.
    */
-  public function toNotContain($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotContain($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotContains(
       $expected,
       not_hack_array($this->var),
@@ -391,12 +391,12 @@ class ExpectObj<T> extends Assert {
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toNotContainKey($key, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotContainKey($key, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     invariant(
       $obj instanceof KeyedContainer,
-      'ERROR: expect(...)->toNotContainKey only can be applied to '.
+      'ERROR: expect(...$args)->toNotContainKey only can be applied to '.
       'KeyedContainers, not %s.',
       print_type($obj),
     );
@@ -405,8 +405,8 @@ class ExpectObj<T> extends Assert {
 
 
   // Asserts: $actual does not match $expected regular expression
-  public function toNotMatchRegExp($expected, string $msg = '', ...): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 2));
+  public function toNotMatchRegExp($expected, string $msg = '', ...$args): void {
+    $msg = \vsprintf($msg, $args);
     $this->assertNotRegExp($expected, (string) $this->var, $msg);
   }
 
@@ -466,9 +466,9 @@ class ExpectObj<T> extends Assert {
     classname<Tclass> $exception_class,
     ?string $expected_exception_message = null,
     ?string $msg = null,
-    ...
+    ...$args
   ): void {
-    $msg = \vsprintf($msg, \array_slice(\func_get_args(), 3));
+    $msg = \vsprintf($msg, $args);
     $this->toThrowWhenCalledWith(
       array(),
       $exception_class,
