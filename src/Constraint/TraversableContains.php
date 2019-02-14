@@ -1,4 +1,4 @@
-<?hh
+<?hh // strict
 /*
  *  Copyright (c) 2004-present, Facebook, Inc.
  *  All rights reserved.
@@ -13,9 +13,9 @@ namespace Facebook\FBExpect\Constraint;
 
 class TraversableContains {
 
-  public function __construct(private $value) {}
+  public function __construct(private mixed $value) {}
 
-  public function matches($other): bool {
+  public function matches(Traversable<mixed> $other): bool {
     if ($other instanceof \SplObjectStorage) {
       return $other->contains($this->value);
     }

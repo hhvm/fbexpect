@@ -1,4 +1,4 @@
-<?hh
+<?hh // strict
 /*
  *  Copyright (c) 2004-present, Facebook, Inc.
  *  All rights reserved.
@@ -16,7 +16,11 @@ use type Facebook\HackTest\ExpectationFailedException;
 
 abstract class Assert {
 
-  public function assertSame($expected, $actual, string $message = ''): void {
+  public function assertSame(
+    mixed $expected,
+    mixed $actual,
+    string $message = '',
+  ): void {
     if ($expected === $actual) {
       return;
     }
@@ -42,8 +46,8 @@ abstract class Assert {
   }
 
   public function assertNotSame(
-    $expected,
-    $actual,
+    mixed $expected,
+    mixed $actual,
     string $message = '',
   ): void {
     if ($expected !== $actual) {
@@ -59,7 +63,11 @@ abstract class Assert {
     );
   }
 
-  public function assertEquals($expected, $actual, string $message = ''): void {
+  public function assertEquals(
+    mixed $expected,
+    mixed $actual,
+    string $message = '',
+  ): void {
     /* HHAST_IGNORE_ERROR[NoPHPEquality] */
     if ($actual == $expected) {
       return;
@@ -76,7 +84,7 @@ abstract class Assert {
 
   public function assertEqualsWithDelta(
     num $expected,
-    $actual,
+    num $actual,
     float $delta,
     string $message = '',
   ): void {
@@ -87,7 +95,7 @@ abstract class Assert {
       Str\format(
         "%s\n%s does not equal %f with delta %f",
         $message,
-        $actual,
+        (string)$actual,
         (float)$expected,
         $delta,
       ),
@@ -95,8 +103,8 @@ abstract class Assert {
   }
 
   public function assertNotEquals(
-    $expected,
-    $actual,
+    mixed $expected,
+    mixed $actual,
     string $message = '',
   ): void {
     /* HHAST_IGNORE_ERROR[NoPHPEquality] */
@@ -113,7 +121,7 @@ abstract class Assert {
     );
   }
 
-  public function assertTrue($condition, string $message = '') {
+  public function assertTrue(mixed $condition, string $message = ''): void {
     if ($condition === true) {
       return;
     }
@@ -126,7 +134,7 @@ abstract class Assert {
     );
   }
 
-  public function assertFalse($condition, string $message = '') {
+  public function assertFalse(mixed $condition, string $message = ''): void {
     if ($condition === false) {
       return;
     }
@@ -139,7 +147,7 @@ abstract class Assert {
     );
   }
 
-  public function assertNull($actual, string $message = '') {
+  public function assertNull(mixed $actual, string $message = ''): void {
     if ($actual === null) {
       return;
     }
@@ -152,7 +160,7 @@ abstract class Assert {
     );
   }
 
-  public function assertNotNull($actual, string $message = '') {
+  public function assertNotNull(mixed $actual, string $message = ''): void {
     if ($actual !== null) {
       return;
     }
@@ -165,7 +173,8 @@ abstract class Assert {
     );
   }
 
-  public function assertEmpty($actual, string $message = '') {
+  public function assertEmpty(mixed $actual, string $message = ''): void {
+    /* HH_FIXME[4016] PHPism */
     if (empty($actual)) {
       return;
     }
@@ -178,8 +187,9 @@ abstract class Assert {
     );
   }
 
-  public function assertNotEmpty($actual, string $message = '') {
-    if (empty($actual)) {
+  public function assertNotEmpty(mixed $actual, string $message = ''): void {
+    /* HH_FIXME[4016] PHPism */
+    if (!empty($actual)) {
       return;
     }
     throw new ExpectationFailedException(
@@ -192,8 +202,8 @@ abstract class Assert {
   }
 
   public function assertGreaterThan(
-    $expected,
-    $actual,
+    num $expected,
+    num $actual,
     string $message = '',
   ): void {
     if ($actual > $expected) {
@@ -210,8 +220,8 @@ abstract class Assert {
   }
 
   public function assertLessThan(
-    $expected,
-    $actual,
+    num $expected,
+    num $actual,
     string $message = '',
   ): void {
     if ($actual < $expected) {
@@ -228,8 +238,8 @@ abstract class Assert {
   }
 
   public function assertGreaterThanOrEqual(
-    $expected,
-    $actual,
+    num $expected,
+    num $actual,
     string $message = '',
   ): void {
     if ($actual >= $expected) {
@@ -246,8 +256,8 @@ abstract class Assert {
   }
 
   public function assertLessThanOrEqual(
-    $expected,
-    $actual,
+    num $expected,
+    num $actual,
     string $message = '',
   ): void {
     if ($actual <= $expected) {
@@ -265,13 +275,13 @@ abstract class Assert {
 
   public function assertInstanceOf(
     string $expected,
-    $actual,
+    mixed $actual,
     string $message = '',
   ): void {
     if (!\class_exists($expected) && !\interface_exists($expected)) {
       throw new InvalidArgumentException('Invalid class or interface name');
     }
-    if ($actual instanceof $expected) {
+    if (\is_a($actual, $expected)) {
       return;
     }
     throw new ExpectationFailedException(
@@ -286,13 +296,13 @@ abstract class Assert {
 
   public function assertNotInstanceOf(
     string $expected,
-    $actual,
+    mixed $actual,
     string $message = '',
   ): void {
     if (!\class_exists($expected) && !\interface_exists($expected)) {
       throw new InvalidArgumentException('Invalid class or interface name');
     }
-    if (!($actual instanceof $expected)) {
+    if (!\is_a($actual, $expected)) {
       return;
     }
     throw new ExpectationFailedException(
@@ -310,7 +320,7 @@ abstract class Assert {
    */
   public function assertType(
     string $expected,
-    $actual,
+    mixed $actual,
     string $message = '',
   ): void {
     if (is_type($expected)) {
@@ -336,7 +346,7 @@ abstract class Assert {
    */
   public function assertNotType(
     string $expected,
-    $actual,
+    mixed $actual,
     string $message = '',
   ): void {
     if (is_type($expected)) {
@@ -358,15 +368,12 @@ abstract class Assert {
   }
 
   public function assertContains(
-    $needle,
-    $haystack,
+    mixed $needle,
+    mixed $haystack,
     string $message = '',
     bool $ignoreCase = false,
   ): void {
-    if (
-      \is_array($haystack) ||
-      (\is_object($haystack) && $haystack instanceof Traversable)
-    ) {
+    if ($haystack is Traversable<_>) {
       if ((new Constraint\TraversableContains($needle))->matches($haystack)) {
         return;
       }
@@ -399,15 +406,12 @@ abstract class Assert {
   }
 
   public function assertNotContains(
-    $needle,
-    $haystack,
+    mixed $needle,
+    mixed $haystack,
     string $message = '',
     bool $ignoreCase = false,
   ): void {
-    if (
-      \is_array($haystack) ||
-      (\is_object($haystack) && $haystack instanceof Traversable)
-    ) {
+    if ($haystack is Traversable<_>) {
       if (!(new Constraint\TraversableContains($needle))->matches($haystack)) {
         return;
       }
@@ -443,7 +447,7 @@ abstract class Assert {
     string $expected,
     string $actual,
     string $message = '',
-  ) {
+  ): void {
     if (\preg_match($expected, $actual) === 1) {
       return;
     }
@@ -461,7 +465,7 @@ abstract class Assert {
     string $expected,
     string $actual,
     string $message = '',
-  ) {
+  ): void {
     if (\preg_match($expected, $actual) === 0) {
       return;
     }
@@ -476,18 +480,18 @@ abstract class Assert {
   }
 
   public function assertSubset(
-    $expected,
-    $actual,
+    dynamic $expected,
+    dynamic $actual,
     string $msg = '',
     string $path = '$actual',
   ): void {
     foreach ($expected as $key => $value) {
-      if (is_any_array($actual)) {
+      if ($actual is KeyedContainer<_, _>) {
         $actual_value = idx($actual, $key);
         $part = '['.\var_export($key, true).']';
       } else if (is_object($actual)) {
         $actual_value = /* UNSAFE_EXPR */ $actual->$key;
-        $part = "->$key";
+        $part = "->".$key;
       } else {
         $actual_value = null;
         $part = null;
@@ -496,7 +500,7 @@ abstract class Assert {
       if (is_any_array($value) || is_object($value)) {
         $this->assertSubset($value, $actual_value, $msg, $path.$part);
       } else {
-        $this->assertEquals($value, $actual_value, $msg."\nKey: $path$part");
+        $this->assertEquals($value, $actual_value, $msg."\nKey: ".$path.$part);
       }
     }
   }
@@ -506,12 +510,12 @@ abstract class Assert {
    * that the contents of the two arrays are equal.
    */
   public function assertKeyAndValueEquals(
-    array $expected,
-    array $actual,
+    KeyedContainer<mixed, mixed> $expected,
+    KeyedContainer<mixed, mixed> $actual,
     string $msg = '',
   ): void {
-    self::sortArrayRecursive(&$expected);
-    self::sortArrayRecursive(&$actual);
+    $expected = self::sortArrayRecursive($expected);
+    $actual = self::sortArrayRecursive($actual);
     $this->assertEquals($expected, $actual, $msg);
   }
 
@@ -572,7 +576,7 @@ abstract class Assert {
       }
 
       if (($pair->count() === 2) && !$comparator($pair[0], $pair[1])) {
-        $main_message = $message ?: 'Collection is not sorted';
+        $main_message = $message === '' ? 'Collection is not sorted' : $message;
         $failure_detail = \sprintf(
           'at pos %d, %s and %s are in the wrong order',
           $index,
@@ -616,13 +620,17 @@ abstract class Assert {
     );
   }
 
-  private static function sortArrayRecursive(array &$arr): void {
-    foreach ($arr as $codemod_inserted_key => $i) {
-      if (is_array($i)) {
-        self::sortArrayRecursive(&$i);
+  private static function sortArrayRecursive(
+    KeyedContainer<mixed, mixed> $arr
+  ): dict<arraykey, mixed> {
+    $out = dict[];
+    foreach ($arr as $k => $v) {
+      if ($v is KeyedContainer<_, _>) {
+        $v = self::sortArrayRecursive($v);
       }
-      $arr[$codemod_inserted_key] = $i;
+      $out[$k as arraykey] = $v;
     }
+    return $out;
   }
 
   private static function sorted<T>(Traversable<T> $x): ImmVector<T> {

@@ -1,4 +1,4 @@
-<?hh
+<?hh // strict
 /*
  *  Copyright (c) 2004-present, Facebook, Inc.
  *  All rights reserved.
@@ -113,9 +113,9 @@ final class ExpectObjTest extends HackTest {
    *   [method_name, test value, expected value (if necessary)]
    *
    */
-  public function provideFailureCases() {
+  public function provideFailureCases(): vec<array<mixed>> {
     $o = new \stdClass();
-    return array(
+    return vec[
       array('toBePHPEqual', false, true),
       array('toNotBePHPEqual', false, false),
       array('toBeGreaterThan', 1, 1),
@@ -176,59 +176,56 @@ final class ExpectObjTest extends HackTest {
         dict['k1' => 'v1', 'k2' => 'v2'],
         dict['k1' => 'v2'],
       ),
-    );
+    ];
   }
 
   <<DataProvider('provideFailureCases')>>
-
   public function testBasicFailure(
-    $func,
-    $values,
-    $expected = self::EMPTY_VALUE,
+    string $func,
+    mixed $actual,
+    mixed $expected = self::EMPTY_VALUE,
   ): void {
+    $obj = expect($actual);
+    $rm = new \ReflectionMethod($obj, $func);
+
     if ($expected === self::EMPTY_VALUE) {
-      expect(() ==> call_user_func(array(expect($values), $func)))->toThrow(
+      expect(() ==> $rm->invoke($obj))->toThrow(
         ExpectationFailedException::class,
       );
     } else {
-      expect(() ==> call_user_func(array(expect($values), $func), $expected))
+      expect(() ==> $rm->invokeArgs($obj, [$expected]))
         ->toThrow(ExpectationFailedException::class);
     }
   }
 
   <<DataProvider('provideFailureCases')>>
-
   public function testFailureWithCustomMsg(
-    $func,
-    $value,
-    $expected = self::EMPTY_VALUE,
+    string $func,
+    mixed $actual,
+    mixed $expected = self::EMPTY_VALUE,
   ): void {
+    $obj = expect($actual);
+    $rm = new \ReflectionMethod($obj, $func);
 
     if ($expected === self::EMPTY_VALUE) {
-      expect(() ==> call_user_func(array(expect($value), $func), 'custom msg'))
+      expect(() ==> $rm->invokeArgs($obj, ['custom msg']))
         ->toThrow(ExpectationFailedException::class, 'custom msg');
     } else {
-      expect(
-        () ==>
-          call_user_func(array(expect($value), $func), $expected, 'custom msg'),
-      )->toThrow(ExpectationFailedException::class, 'custom msg');
+      expect(() ==> $rm->invokeArgs($obj, [$expected, 'custom msg']))->toThrow(
+        ExpectationFailedException::class,
+        'custom msg',
+      );
       ;
     }
 
     // And with funky sprintfification
     if ($expected === self::EMPTY_VALUE) {
-      expect(
-        () ==> \call_user_func_array(
-          array(expect($value), $func),
-          array('custom %s %d %f', 'msg', 1, 2.1),
-        ),
-      )->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
+      expect(() ==> $rm->invokeArgs($obj, ['custom %s %d %f', 'msg', 1, 2.1]))
+        ->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     } else {
       expect(
-        () ==> \call_user_func_array(
-          array(expect($value), $func),
-          array($expected, 'custom %s %d %f', 'msg', 1, 2.1),
-        ),
+        () ==>
+          $rm->invokeArgs($obj, [$expected, 'custom %s %d %f', 'msg', 1, 2.1]),
       )->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     }
   }
@@ -250,8 +247,10 @@ final class ExpectObjTest extends HackTest {
     )->toThrow(\Exception::class);
 
     expect(
-      function($class) {
-        throw new $class();
+      (classname<\Exception> $class) ==> {
+        if ($class === ExpectObjTestException::class) {
+          throw new ExpectObjTestException();
+        }
       },
     )->toThrowWhenCalledWith(
       array(ExpectObjTestException::class),
@@ -290,9 +289,11 @@ final class ExpectObjTest extends HackTest {
 
   public function testAwaitableFunctionGetsPrepped(): void {
     expect(
-      async function($class) {
+      async (mixed $class) ==> {
         await self::stopEagerExecution();
-        throw new $class();
+        if ($class === ExpectObjTestException::class) {
+          throw new ExpectObjTestException();
+        }
       },
     )->toThrowWhenCalledWith(
       array(ExpectObjTestException::class),
@@ -323,14 +324,14 @@ final class ExpectObjTest extends HackTest {
   public function testToHaveSameContentAsSuccess(): void {
     expect(
       () ==> {
-        expect(Set { 1, 2 })->toHaveSameContentAs(Vector { 2, 1 });
-        expect(array(3))->toHaveSameContentAs(Map { 1 => 3 });
+        expect(Set {1, 2})->toHaveSameContentAs(Vector {2, 1});
+        expect(array(3))->toHaveSameContentAs(Map {1 => 3});
       },
     )->notToThrow();
   }
 
   public function testToHaveSameContentAsFailure(): void {
-    expect(() ==> expect(array(1, 2))->toHaveSameContentAs(Vector { 1 }))
+    expect(() ==> expect(array(1, 2))->toHaveSameContentAs(Vector {1}))
       ->toThrow(ExpectationFailedException::class);
   }
 
