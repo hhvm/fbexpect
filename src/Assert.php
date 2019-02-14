@@ -60,6 +60,7 @@ abstract class Assert {
   }
 
   public function assertEquals($expected, $actual, string $message = ''): void {
+    /* HHAST_IGNORE_ERROR[NoPHPEquality] */
     if ($actual == $expected) {
       return;
     }
@@ -98,6 +99,7 @@ abstract class Assert {
     $actual,
     string $message = '',
   ): void {
+    /* HHAST_IGNORE_ERROR[NoPHPEquality] */
     if ($actual != $expected) {
       return;
     }
@@ -164,7 +166,7 @@ abstract class Assert {
   }
 
   public function assertEmpty($actual, string $message = '') {
-    if (empty($actual) == true) {
+    if (empty($actual)) {
       return;
     }
     throw new ExpectationFailedException(
@@ -177,7 +179,7 @@ abstract class Assert {
   }
 
   public function assertNotEmpty($actual, string $message = '') {
-    if (empty($actual) != true) {
+    if (empty($actual)) {
       return;
     }
     throw new ExpectationFailedException(

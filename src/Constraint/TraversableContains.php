@@ -19,6 +19,7 @@ class TraversableContains {
       return false;
     }
     foreach ($other as $element) {
+      /* HHAST_IGNORE_ERROR[NoPHPEquality] */
       if ($element == $this->value) {
         return true;
       }
