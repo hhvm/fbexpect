@@ -303,8 +303,8 @@ class ExpectObj<T> extends Assert {
    * Asserts: $actual has the same content as $expected, i.e. the same items
    * regardless of order.
    */
-  public function toHaveSameContentAs(
-    KeyedContainer<mixed, mixed> $expected,
+  public function toHaveSameContentAs<Tk as arraykey>(
+    KeyedContainer<Tk, mixed> $expected,
     string $msg = '',
     mixed ...$args
   ): void {
@@ -448,7 +448,7 @@ class ExpectObj<T> extends Assert {
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toNotContainKey(arraykey $key, string $msg = '', mixed ...$args): void where T as KeyedContainer<mixed, mixed> {
+  public function toNotContainKey(arraykey $key, string $msg = '', mixed ...$args): void where T as KeyedContainer<arraykey, mixed> {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     $this->assertFalse(\array_key_exists($key, $obj), $msg);

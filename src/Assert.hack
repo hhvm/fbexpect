@@ -510,7 +510,7 @@ abstract class Assert {
   ): void {
     foreach ($expected as $key => $value) {
       if ($actual is KeyedContainer<_, _>) {
-        $actual_value = idx($actual, $key);
+        $actual_value = idx($actual, $key ?as arraykey);
         $part = '['.\var_export($key, true).']';
       } else if (is_object($actual)) {
         $actual_value = /* UNSAFE_EXPR */ $actual->$key;
@@ -532,9 +532,9 @@ abstract class Assert {
    * Recursively sorts the two arbitrarily depth nested arrays and then checks
    * that the contents of the two arrays are equal.
    */
-  public function assertKeyAndValueEquals(
-    KeyedContainer<mixed, mixed> $expected,
-    KeyedContainer<mixed, mixed> $actual,
+  public function assertKeyAndValueEquals<Tk as arraykey>(
+    KeyedContainer<Tk, mixed> $expected,
+    KeyedContainer<Tk, mixed> $actual,
     string $msg = '',
   ): void {
     $expected = self::sortArrayRecursive($expected);
@@ -643,8 +643,8 @@ abstract class Assert {
     );
   }
 
-  private static function sortArrayRecursive(
-    KeyedContainer<mixed, mixed> $arr
+  private static function sortArrayRecursive<Tk as arraykey>(
+    KeyedContainer<Tk, mixed> $arr
   ): dict<arraykey, mixed> {
     $out = dict[];
     foreach ($arr as $k => $v) {
