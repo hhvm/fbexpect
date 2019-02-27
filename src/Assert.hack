@@ -649,6 +649,7 @@ abstract class Assert {
     $out = dict[];
     foreach ($arr as $k => $v) {
       if ($v is KeyedContainer<_, _>) {
+        /* HH_FIXME[4110] KeyedContainer<_, _> always has arraykey keys */
         $v = self::sortArrayRecursive($v);
       }
       $out[$k as arraykey] = $v;
