@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a643b2edb9bf4064ff9576471565d917",
+    "content-hash": "930a83f29f9b0fb8b77ef5ca13c0409f",
     "packages": [
         {
             "name": "facebook/difflib",
@@ -282,22 +282,22 @@
     "packages-dev": [
         {
             "name": "hhvm/hhast",
-            "version": "v4.0.5",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hhvm/hhast.git",
-                "reference": "a5e7f731dcc73846b500062f52abfb58d575be13"
+                "reference": "b3933992f65e948dd600ed9a4fbef508388ce7ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hhvm/hhast/zipball/a5e7f731dcc73846b500062f52abfb58d575be13",
-                "reference": "a5e7f731dcc73846b500062f52abfb58d575be13",
+                "url": "https://api.github.com/repos/hhvm/hhast/zipball/b3933992f65e948dd600ed9a4fbef508388ce7ed",
+                "reference": "b3933992f65e948dd600ed9a4fbef508388ce7ed",
                 "shasum": ""
             },
             "require": {
                 "facebook/difflib": "^1.0.0",
                 "facebook/hh-clilib": "^2.0.0",
-                "hhvm": "^4.0",
+                "hhvm": "^4.1",
                 "hhvm/hhvm-autoload": "^2.0.4",
                 "hhvm/hsl": "^4.0",
                 "hhvm/type-assert": "^3.1"
@@ -309,8 +309,11 @@
             },
             "bin": [
                 "bin/hhast-lint",
+                "bin/hhast-lint.hack",
                 "bin/hhast-inspect",
-                "bin/hhast-migrate"
+                "bin/hhast-inspect.hack",
+                "bin/hhast-migrate",
+                "bin/hhast-migrate.hack"
             ],
             "type": "library",
             "extra": {
@@ -322,7 +325,7 @@
             "license": [
                 "MIT"
             ],
-            "time": "2019-03-06T18:49:34+00:00"
+            "time": "2019-03-11T21:30:03+00:00"
         }
     ],
     "aliases": [],

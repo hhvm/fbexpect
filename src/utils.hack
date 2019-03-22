@@ -11,7 +11,7 @@ namespace Facebook\FBExpect;
 
 function is_any_array(mixed $value): bool {
   return (
-    is_array($value) ||
+    \is_array($value) ||
     ($value is dict<_, _>) ||
     ($value is vec<_>) ||
     ($value is keyset<_>)
@@ -19,7 +19,7 @@ function is_any_array(mixed $value): bool {
 }
 
 function not_hack_array(mixed $value): mixed {
-  if (is_any_array($value) && !is_array($value)) {
+  if (is_any_array($value) && !\is_array($value)) {
     /* HH_IGNORE_ERROR[4007] sketchy array cast */
     return (array) $value;
   }
@@ -27,14 +27,14 @@ function not_hack_array(mixed $value): mixed {
 }
 
 function print_type(mixed $value): string {
-  if (is_object($value)) {
+  if (\is_object($value)) {
     return \get_class($value);
   }
   return \gettype($value);
 }
 
 function is_iterable(mixed $value): bool {
-  return is_array($value) || (is_object($value) && ($value instanceof Traversable));
+  return \is_array($value) || (\is_object($value) && ($value instanceof Traversable));
 }
 
 function is_type(mixed $value): bool {

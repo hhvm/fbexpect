@@ -295,7 +295,7 @@ class ExpectObj<T> extends Assert {
     /* HH_FIXME[4110] KeyedContainer<_, _> always has arraykey keys */
     $this->assertKeyAndValueEquals(
       $expected as KeyedContainer<_, _>,
-      is_array($value) ? $value : [],
+      \is_array($value) ? $value : [],
       $msg,
     );
   }

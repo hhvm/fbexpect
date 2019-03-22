@@ -512,7 +512,7 @@ abstract class Assert {
       if ($actual is KeyedContainer<_, _>) {
         $actual_value = idx($actual, $key ?as arraykey);
         $part = '['.\var_export($key, true).']';
-      } else if (is_object($actual)) {
+      } else if (\is_object($actual)) {
         $actual_value = /* UNSAFE_EXPR */ $actual->$key;
         $part = "->".$key;
       } else {
@@ -520,7 +520,7 @@ abstract class Assert {
         $part = null;
       }
 
-      if (is_any_array($value) || is_object($value)) {
+      if (is_any_array($value) || \is_object($value)) {
         $this->assertSubset($value, $actual_value, $msg, $path.$part);
       } else {
         $this->assertEquals($value, $actual_value, $msg."\nKey: ".$path.$part);
