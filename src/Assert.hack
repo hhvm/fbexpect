@@ -400,7 +400,7 @@ abstract class Assert {
       if ((new Constraint\TraversableContains($needle))->matches($haystack)) {
         return;
       }
-    } elseif (($haystack is string)) {
+    } else if (($haystack is string)) {
       if (!($needle is string)) {
         throw new InvalidArgumentException(
           'If haystack is string, needle must be string',
@@ -438,7 +438,7 @@ abstract class Assert {
       if (!(new Constraint\TraversableContains($needle))->matches($haystack)) {
         return;
       }
-    } elseif (($haystack is string)) {
+    } else if (($haystack is string)) {
       if (!($needle is string)) {
         throw new InvalidArgumentException(
           'If haystack is string, needle must be string',
