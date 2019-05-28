@@ -521,7 +521,7 @@ abstract class Assert {
         $actual_value = idx($actual, $key ?as arraykey);
         $part = '['.\var_export($key, true).']';
       } else if (\is_object($actual)) {
-        $actual_value = /* UNSAFE_EXPR */ $actual->$key;
+        $actual_value = /* HH_FIXME[2011] */ $actual->$key;
         $part = "->".$key;
       } else {
         $actual_value = null;
