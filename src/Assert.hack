@@ -9,7 +9,7 @@
 
 namespace Facebook\FBExpect;
 
-use namespace HH\Lib\Str;
+use namespace HH\Lib\{C, Str};
 use type Facebook\DiffLib\StringDiff;
 use type Facebook\HackTest\ExpectationFailedException;
 
@@ -95,21 +95,21 @@ abstract class Assert {
         Str\format(
           "%s\nnull is not equal to %f (with delta %f)",
           $message,
-          (float) $expected,
+          (float)$expected,
           $delta,
-        )
+        ),
       );
     }
-		if ($expected === null) {
-			throw new ExpectationFailedException(
-				Str\format(
-					"%s\n%f is not equal to null (with delta %f)",
-					$message,
-          (float) $actual,
-					$delta,
-				)
-			);
-		}
+    if ($expected === null) {
+      throw new ExpectationFailedException(
+        Str\format(
+          "%s\n%f is not equal to null (with delta %f)",
+          $message,
+          (float)$actual,
+          $delta,
+        ),
+      );
+    }
 
     if ($actual >= $expected - $delta && $actual <= $expected + $delta) {
       return;
@@ -196,9 +196,18 @@ abstract class Assert {
     );
   }
 
+  private function isPHPEmpty(mixed $v): bool {
+    return $v === '' ||
+      $v === 0 ||
+      $v === 0.0 ||
+      $v === '0' ||
+      $v === null ||
+      $v === false ||
+      ($v is Container<_> && C\is_empty($v));
+  }
+
   public function assertEmpty(mixed $actual, string $message = ''): void {
-    /* HH_FIXME[4016] PHPism */
-    if (empty($actual)) {
+    if ($this->isPHPEmpty($actual)) {
       return;
     }
     throw new ExpectationFailedException(
@@ -211,8 +220,7 @@ abstract class Assert {
   }
 
   public function assertNotEmpty(mixed $actual, string $message = ''): void {
-    /* HH_FIXME[4016] PHPism */
-    if (!empty($actual)) {
+    if (!$this->isPHPEmpty($actual)) {
       return;
     }
     throw new ExpectationFailedException(
@@ -607,8 +615,9 @@ abstract class Assert {
           \var_export($pair[1], true),
         );
 
-        throw
-          new ExpectationFailedException($main_message.': '.$failure_detail);
+        throw new ExpectationFailedException(
+          $main_message.': '.$failure_detail,
+        );
       }
 
       $index++;
@@ -644,7 +653,7 @@ abstract class Assert {
   }
 
   private static function sortArrayRecursive<Tk as arraykey>(
-    KeyedContainer<Tk, mixed> $arr
+    KeyedContainer<Tk, mixed> $arr,
   ): dict<arraykey, mixed> {
     $out = dict[];
     foreach ($arr as $k => $v) {
