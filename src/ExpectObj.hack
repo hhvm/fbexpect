@@ -23,13 +23,17 @@ class ExpectObj<T> extends Assert {
    *
    */
 
-  <<__Deprecated("Use toBeSame() or toBePHPEqual()")>>
+  /**
+   * Asserts: $actual === $expected
+   * Note:    Two objects are considered the same if they reference the same
+   *          instance
+   */
   public function toEqual(
     mixed $expected,
     string $msg = '',
     mixed ...$args
   ): void {
-    $this->toBePHPEqual($expected, $msg, ...$args);
+    $this->toBeSame($expected, $msg, ...$args);
   }
 
   /**
@@ -357,13 +361,17 @@ class ExpectObj<T> extends Assert {
    **************************************
    **************************************/
 
-  <<__Deprecated("Use toNotBeSame() or toNotBePHPEqual()")>>
+  /**
+   * Asserts: $actual !== $expected
+   * Note:    Two objects are considered the same if they reference the same
+   *          instance
+   */
   public function toNotEqual(
     mixed $expected,
     string $msg = '',
     mixed ...$args
   ): void {
-    $this->toNotBePHPEqual($expected, $msg, ...$args);
+    $this->toNotBeSame($expected, $msg, ...$args);
   }
 
   public function toNotBePHPEqual(
