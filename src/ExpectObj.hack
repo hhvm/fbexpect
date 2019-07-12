@@ -254,7 +254,7 @@ class ExpectObj<T> extends Assert {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     invariant(
-      $obj instanceof KeyedContainer,
+      $obj is KeyedContainer<_, _>,
       'ERROR: expect(...$args)->toContainKey only can be applied to '.
       'KeyedContainers, not %s.',
       print_type($obj),
@@ -315,7 +315,7 @@ class ExpectObj<T> extends Assert {
   ): void {
     $msg = \vsprintf($msg, $args);
     $value = $this->var;
-    assert($value instanceof Traversable);
+    assert($value is Traversable<_>);
     $this->assertContentsEqual($expected, $value, $msg);
   }
 
@@ -331,7 +331,7 @@ class ExpectObj<T> extends Assert {
 
     $actual = $this->var;
     invariant(
-      $actual instanceof Traversable,
+      $actual is Traversable<_>,
       'ERROR: expect(...$args)->toBeSortedByKey only can be applied to '.
       'Traversables, not %s.',
       print_type($actual),
@@ -448,7 +448,11 @@ class ExpectObj<T> extends Assert {
    *         element for which $element == $needle.
    * Note:   If $needle is an object, === will be used.
    */
-  public function toNotContain(mixed $expected, string $msg = '', mixed ...$args): void {
+  public function toNotContain(
+    mixed $expected,
+    string $msg = '',
+    mixed ...$args
+  ): void {
     $msg = \vsprintf($msg, $args);
     $this->assertNotContains($expected, not_hack_array($this->var), $msg);
   }
@@ -457,7 +461,11 @@ class ExpectObj<T> extends Assert {
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toNotContainKey(arraykey $key, string $msg = '', mixed ...$args): void where T as KeyedContainer<arraykey, mixed> {
+  public function toNotContainKey(
+    arraykey $key,
+    string $msg = '',
+    mixed ...$args
+  ): void where T as KeyedContainer<arraykey, mixed> {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     $this->assertFalse(\array_key_exists($key, $obj), $msg);
@@ -585,7 +593,7 @@ class ExpectObj<T> extends Assert {
       $callable = $this->var;
       $returned = \call_user_func_array($callable, $args);
 
-      if ($returned instanceof Awaitable) {
+      if ($returned is Awaitable<_>) {
         $ret = \HH\Asio\join($returned);
       }
     } catch (\Exception $e) {
