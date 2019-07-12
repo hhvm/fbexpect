@@ -254,7 +254,7 @@ class ExpectObj<T> extends Assert {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     invariant(
-      $obj instanceof KeyedContainer,
+      $obj is KeyedContainer<_, _>,
       'ERROR: expect(...$args)->toContainKey only can be applied to '.
       'KeyedContainers, not %s.',
       print_type($obj),
@@ -315,7 +315,7 @@ class ExpectObj<T> extends Assert {
   ): void {
     $msg = \vsprintf($msg, $args);
     $value = $this->var;
-    assert($value instanceof Traversable);
+    assert($value is Traversable<_>);
     $this->assertContentsEqual($expected, $value, $msg);
   }
 
@@ -331,13 +331,13 @@ class ExpectObj<T> extends Assert {
 
     $actual = $this->var;
     invariant(
-      $actual instanceof Traversable,
+      $actual is Traversable<_>,
       'ERROR: expect(...$args)->toBeSortedByKey only can be applied to '.
       'Traversables, not %s.',
       print_type($actual),
     );
 
-    $this->assertIsSorted($actual, $comparator, $msg);
+    $this->assertIsSorted($actual, /* HH_FIXME[4110] */ $comparator, $msg);
   }
 
   /**
@@ -585,7 +585,7 @@ class ExpectObj<T> extends Assert {
       $callable = $this->var;
       $returned = \call_user_func_array($callable, $args);
 
-      if ($returned instanceof Awaitable) {
+      if ($returned is Awaitable<_>) {
         $ret = \HH\Asio\join($returned);
       }
     } catch (\Exception $e) {

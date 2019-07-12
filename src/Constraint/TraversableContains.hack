@@ -15,8 +15,8 @@ class TraversableContains {
   public function __construct(private mixed $value) {}
 
   public function matches(Traversable<mixed> $other): bool {
-    if ($other instanceof \SplObjectStorage) {
-      return $other->contains($this->value);
+    if ($other is \SplObjectStorage<_, _>) {
+      return $other->contains(/* HH_FIXME[4110] */ $this->value);
     }
     if (\is_object($this->value)) {
       foreach ($other as $element) {
