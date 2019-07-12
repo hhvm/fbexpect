@@ -23,6 +23,11 @@ class ExpectObj<T> extends Assert {
    *
    */
 
+  /**
+   * Asserts: $actual === $expected
+   * Note:    Two objects are considered the same if they reference the same
+   *          instance
+   */
   public function toEqual(
     mixed $expected,
     string $msg = '',
@@ -356,6 +361,11 @@ class ExpectObj<T> extends Assert {
    **************************************
    **************************************/
 
+  /**
+   * Asserts: $actual !== $expected
+   * Note:    Two objects are considered the same if they reference the same
+   *          instance
+   */
   public function toNotEqual(
     mixed $expected,
     string $msg = '',
