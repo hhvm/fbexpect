@@ -28,7 +28,7 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     mixed ...$args
   ): void {
-    $this->toBePHPEqual($expected, $msg, ...$args);
+    $this->toBeSame($expected, $msg, ...$args);
   }
 
   /**
@@ -361,7 +361,7 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     mixed ...$args
   ): void {
-    $this->toNotBePHPEqual($expected, $msg, ...$args);
+    $this->toNotBeSame($expected, $msg, ...$args);
   }
 
   public function toNotBePHPEqual(
