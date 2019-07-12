@@ -23,7 +23,6 @@ class ExpectObj<T> extends Assert {
    *
    */
 
-  <<__Deprecated("Use toBeSame() or toBePHPEqual()")>>
   public function toEqual(
     mixed $expected,
     string $msg = '',
@@ -357,7 +356,6 @@ class ExpectObj<T> extends Assert {
    **************************************
    **************************************/
 
-  <<__Deprecated("Use toNotBeSame() or toNotBePHPEqual()")>>
   public function toNotEqual(
     mixed $expected,
     string $msg = '',
