@@ -6,3 +6,6 @@ disallow_unsafe_comparisons=true
 decl_override_require_hint=true
 enable_experimental_tc_features=shape_field_check,sealed_classes
 user_attributes=
+disallow_ambiguous_lambda=true
+disable_unsafe_expr=true
+disable_unsafe_block=true
