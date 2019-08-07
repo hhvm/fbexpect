@@ -321,6 +321,44 @@ final class ExpectObjTest extends HackTest {
         );
       },
     )->notToThrow();
+
+    // two arrays
+    expect(
+      () ==> {
+        expect(
+          array(
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
+          ),
+        )->toHaveSameShapeAs(
+          array(
+            'b' => 4,
+            'c' => 3,
+            'a' => 5,
+          ),
+        );
+      },
+    )->notToThrow();
+
+    // two dicts
+    expect(
+      () ==> {
+        expect(
+          dict[
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
+          ],
+        )->toHaveSameShapeAs(
+          dict[
+            'b' => 4,
+            'c' => 3,
+            'a' => 5,
+          ],
+        );
+      },
+    )->notToThrow();
   }
 
   public function testToHaveSameContentAsSuccess(): void {
