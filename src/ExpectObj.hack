@@ -292,14 +292,13 @@ class ExpectObj<T> extends Assert {
     string $msg = '',
     mixed ...$args
   ): void {
-    $expected = $expected as shape(...);
     $msg = \vsprintf($msg, $args);
 
     $value = $this->var;
     /* HH_FIXME[4110] KeyedContainer<_, _> always has arraykey keys */
     $this->assertKeyAndValueEquals(
       $expected as KeyedContainer<_, _>,
-      \is_array($value) ? $value : [],
+      $value as KeyedContainer<_, _>,
       $msg,
     );
   }

@@ -321,6 +321,44 @@ final class ExpectObjTest extends HackTest {
         );
       },
     )->notToThrow();
+
+    // two arrays
+    expect(
+      () ==> {
+        expect(
+          array(
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
+          ),
+        )->toHaveSameShapeAs(
+          array(
+            'b' => 4,
+            'c' => 3,
+            'a' => 5,
+          ),
+        );
+      },
+    )->notToThrow();
+
+    // two dicts
+    expect(
+      () ==> {
+        expect(
+          dict[
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
+          ],
+        )->toHaveSameShapeAs(
+          dict[
+            'b' => 4,
+            'c' => 3,
+            'a' => 5,
+          ],
+        );
+      },
+    )->notToThrow();
   }
 
   public function testToHaveSameContentAsSuccess(): void {
@@ -355,6 +393,7 @@ final class ExpectObjTest extends HackTest {
         );
       },
     )->notToThrow();
+
     expect(
       () ==> {
         expect(
@@ -369,6 +408,42 @@ final class ExpectObjTest extends HackTest {
             'b' => 3,
             'c' => 5,
           ),
+        );
+      },
+    )->toThrow(ExpectationFailedException::class);
+
+    expect(
+      () ==> {
+        expect(
+          array(
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
+          ),
+        )->toHaveSameShapeAs(
+          array(
+            'a' => 4,
+            'b' => 3,
+            'c' => 5,
+          ),
+        );
+      },
+    )->toThrow(ExpectationFailedException::class);
+
+    expect(
+      () ==> {
+        expect(
+          dict[
+            'a' => 5,
+            'b' => 4,
+            'c' => 3,
+          ],
+        )->toHaveSameShapeAs(
+          dict[
+            'a' => 4,
+            'b' => 3,
+            'c' => 5,
+          ],
         );
       },
     )->toThrow(ExpectationFailedException::class);
