@@ -44,8 +44,10 @@ $y = expect($y)->toBeInstanceOf(Foo::class);
 FBExpect is installed via composer:
 
 ```
-hhvm ~/composer require facebook/fbexpect
+composer require facebook/fbexpect
 ```
+
+Composer must be executed with `php`, not HHVM.
 
 ## License
 
