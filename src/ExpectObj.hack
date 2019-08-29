@@ -585,7 +585,7 @@ class ExpectObj<T> extends Assert {
       $returned = \call_user_func_array($callable, $args);
 
       if ($returned is Awaitable<_>) {
-        $ret = \HH\Asio\join($returned);
+        \HH\Asio\join($returned);
       }
     } catch (\Exception $e) {
       $e = expect($e)->toBeInstanceOf(
