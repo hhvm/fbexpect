@@ -9,7 +9,7 @@
 
 namespace Facebook\FBExpect;
 
-use namespace HH\Lib\{C, Str};
+use namespace HH\Lib\{C, Str, Vec};
 use type Facebook\DiffLib\StringDiff;
 use type Facebook\HackTest\ExpectationFailedException;
 
@@ -667,8 +667,6 @@ abstract class Assert {
   }
 
   private static function sorted<T>(Traversable<T> $x): ImmVector<T> {
-    $copy = Vector::fromItems($x);
-    \sort(inout $copy);
-    return $copy->toImmVector();
+    return new ImmVector(Vec\sort($x));
   }
 }
