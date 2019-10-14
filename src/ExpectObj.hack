@@ -447,7 +447,11 @@ class ExpectObj<T> extends Assert {
    *         element for which $element == $needle.
    * Note:   If $needle is an object, === will be used.
    */
-  public function toNotContain(mixed $expected, string $msg = '', mixed ...$args): void {
+  public function toNotContain(
+    mixed $expected,
+    string $msg = '',
+    mixed ...$args
+  ): void {
     $msg = \vsprintf($msg, $args);
     $this->assertNotContains($expected, not_hack_array($this->var), $msg);
   }
@@ -456,7 +460,11 @@ class ExpectObj<T> extends Assert {
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toNotContainKey(arraykey $key, string $msg = '', mixed ...$args): void where T as KeyedContainer<arraykey, mixed> {
+  public function toNotContainKey(
+    arraykey $key,
+    string $msg = '',
+    mixed ...$args
+  ): void where T as KeyedContainer<arraykey, mixed> {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     $this->assertFalse(\array_key_exists($key, $obj), $msg);
