@@ -26,7 +26,7 @@ final class ExpectObjTest extends HackTest {
 
     expect(1)->toBePHPEqual(1, 'custom msg');
     expect(true)->toNotBePHPEqual(false);
-    expect(array(1, 2, 3))->toBePHPEqual(array(1, 2, 3));
+    expect(varray[1, 2, 3])->toBePHPEqual(varray[1, 2, 3]);
 
     expect(1)->toBeGreaterThan(0);
     expect(1)->toBeGreaterThanOrEqualTo(0);
@@ -55,8 +55,8 @@ final class ExpectObjTest extends HackTest {
     // vec[] is keyed by int type.
     expect(vec[])->toBeType('KeyedContainer');
     expect(dict[])->toBeType('KeyedContainer');
-    expect(array(1, 2, 3))->toContain(2);
-    expect(array(1, 2, 3))->toNotContain(7);
+    expect(varray[1, 2, 3])->toContain(2);
+    expect(varray[1, 2, 3])->toNotContain(7);
     expect(1)->toAlmostEqual(1);
     expect(null)->toAlmostEqual(null);
 
@@ -82,13 +82,13 @@ final class ExpectObjTest extends HackTest {
     expect(dict[])->toNotContainKey('x');
 
     // subsets are OK
-    expect(array('k1' => 'v1', 'k2' => 'v2'))
-      ->toInclude(array('k1' => 'v1'));
+    expect(darray['k1' => 'v1', 'k2' => 'v2'])
+      ->toInclude(darray['k1' => 'v1']);
     expect(dict['k1' => 'v1', 'k2' => 'v2'])->toInclude(dict['k1' => 'v1']);
 
     // same set is OK, even if order is different
-    expect(array('k2' => 'v2', 'k1' => 'v1'))
-      ->toInclude(array('k1' => 'v1', 'k2' => 'v2'));
+    expect(darray['k2' => 'v2', 'k1' => 'v1'])
+      ->toInclude(darray['k1' => 'v1', 'k2' => 'v2']);
     expect(dict['k1' => 'v1', 'k2' => 'v2'])
       ->toInclude(dict['k1' => 'v1', 'k2' => 'v2']);
 
@@ -97,7 +97,7 @@ final class ExpectObjTest extends HackTest {
     expect('haystack')->toNotMatchRegExp('/needle/');
 
     // sorting
-    expect(array(1, 2, 3))->toBeSortedBy(function(int $prev, int $curr): bool {
+    expect(varray[1, 2, 3])->toBeSortedBy(function(int $prev, int $curr): bool {
       if ($prev <= $curr) {
         return true;
       }
@@ -117,67 +117,67 @@ final class ExpectObjTest extends HackTest {
   public function provideFailureCases(): vec<array<mixed>> {
     $o = new \stdClass();
     return vec[
-      array('toBePHPEqual', false, true),
-      array('toNotBePHPEqual', false, false),
-      array('toBeGreaterThan', 1, 1),
-      array('toBeLessThan', 1, 1),
-      array('toBeGreaterThanOrEqualTo', 1, 2),
-      array('toBeLessThanOrEqualTo', 2, 1),
-      array('toBeSame', $o, new \stdClass()),
-      array('toNotBeSame', $o, $o),
-      array('toBeTrue', false),
-      array('toBeFalse', true),
-      array('toBeNull', false),
-      array('toNotBeNull', null),
-      array('toBeEmpty', 1),
-      array('toNotBeEmpty', 0),
-      array('toNotBeInstanceOf', $o, 'stdClass'),
-      array('toBeType', 'a', 'int'),
-      array('toNotBeType', 1, 'int'),
-      array('toContain', array(1, 2, 3), 7),
-      array('toNotContain', array(1, 2, 3), 2),
-      array('toAlmostEqual', null, 0.0),
+      varray['toBePHPEqual', false, true],
+      varray['toNotBePHPEqual', false, false],
+      varray['toBeGreaterThan', 1, 1],
+      varray['toBeLessThan', 1, 1],
+      varray['toBeGreaterThanOrEqualTo', 1, 2],
+      varray['toBeLessThanOrEqualTo', 2, 1],
+      varray['toBeSame', $o, new \stdClass()],
+      varray['toNotBeSame', $o, $o],
+      varray['toBeTrue', false],
+      varray['toBeFalse', true],
+      varray['toBeNull', false],
+      varray['toNotBeNull', null],
+      varray['toBeEmpty', 1],
+      varray['toNotBeEmpty', 0],
+      varray['toNotBeInstanceOf', $o, 'stdClass'],
+      varray['toBeType', 'a', 'int'],
+      varray['toNotBeType', 1, 'int'],
+      varray['toContain', varray[1, 2, 3], 7],
+      varray['toNotContain', varray[1, 2, 3], 2],
+      varray['toAlmostEqual', null, 0.0],
 
       // hack arrays
-      array('toContain', keyset[1, 2, 3], 7),
-      array('toNotContain', keyset[1, 2, 3], 2),
-      array('toContain', keyset[], 2),
+      varray['toContain', keyset[1, 2, 3], 7],
+      varray['toNotContain', keyset[1, 2, 3], 2],
+      varray['toContain', keyset[], 2],
 
-      array('toContain', vec[1, 2, 3], 7),
-      array('toNotContain', vec[1, 2, 3], 2),
-      array('toContain', vec[], 2),
+      varray['toContain', vec[1, 2, 3], 7],
+      varray['toNotContain', vec[1, 2, 3], 2],
+      varray['toContain', vec[], 2],
 
-      array('toContain', dict['x' => 1, 'y' => 2, 'z' => 3], 7),
-      array('toNotContain', dict['x' => 1, 'y' => 2, 'z' => 3], 2),
-      array('toContain', dict[], 2),
+      varray['toContain', dict['x' => 1, 'y' => 2, 'z' => 3], 7],
+      varray['toNotContain', dict['x' => 1, 'y' => 2, 'z' => 3], 2],
+      varray['toContain', dict[], 2],
 
-      array('toContainKey', dict['x' => 1, 'y' => 2, 'z' => 3], '1'),
-      array('toNotContainKey', dict['x' => 1, 'y' => 2, 'z' => 3], 'y'),
-      array('toContainKey', dict[], 'a'),
+      varray['toContainKey', dict['x' => 1, 'y' => 2, 'z' => 3], '1'],
+      varray['toNotContainKey', dict['x' => 1, 'y' => 2, 'z' => 3], 'y'],
+      varray['toContainKey', dict[], 'a'],
 
       // superset is not OK
-      array(
+      varray[
         'toInclude',
-        array('k1' => 'v1'),
-        array('k1' => 'v1', 'k2' => 'v2'),
-      ),
-      array(
+        darray['k1' => 'v1'],
+        darray['k1' => 'v1', 'k2' => 'v2'],
+      ],
+      varray[
         'toInclude',
         dict['k1' => 'v1'],
         dict['k1' => 'v1', 'k2' => 'v2'],
-      ),
+      ],
 
       // values have to equal
-      array(
+      varray[
         'toInclude',
-        array('k1' => 'v1', 'k2' => 'v2'),
-        array('k1' => 'v2'),
-      ),
-      array(
+        darray['k1' => 'v1', 'k2' => 'v2'],
+        darray['k1' => 'v2'],
+      ],
+      varray[
         'toInclude',
         dict['k1' => 'v1', 'k2' => 'v2'],
         dict['k1' => 'v2'],
-      ),
+      ],
     ];
   }
 
@@ -195,7 +195,7 @@ final class ExpectObjTest extends HackTest {
         ExpectationFailedException::class,
       );
     } else {
-      expect(() ==> $rm->invokeArgs($obj, [$expected]))
+      expect(() ==> $rm->invokeArgs($obj, varray[$expected]))
         ->toThrow(ExpectationFailedException::class);
     }
   }
@@ -210,10 +210,10 @@ final class ExpectObjTest extends HackTest {
     $rm = new \ReflectionMethod($obj, $func);
 
     if ($expected === self::EMPTY_VALUE) {
-      expect(() ==> $rm->invokeArgs($obj, ['custom msg']))
+      expect(() ==> $rm->invokeArgs($obj, varray['custom msg']))
         ->toThrow(ExpectationFailedException::class, 'custom msg');
     } else {
-      expect(() ==> $rm->invokeArgs($obj, [$expected, 'custom msg']))->toThrow(
+      expect(() ==> $rm->invokeArgs($obj, varray[$expected, 'custom msg']))->toThrow(
         ExpectationFailedException::class,
         'custom msg',
       );
@@ -222,12 +222,12 @@ final class ExpectObjTest extends HackTest {
 
     // And with funky sprintfification
     if ($expected === self::EMPTY_VALUE) {
-      expect(() ==> $rm->invokeArgs($obj, ['custom %s %d %f', 'msg', 1, 2.1]))
+      expect(() ==> $rm->invokeArgs($obj, varray['custom %s %d %f', 'msg', 1, 2.1]))
         ->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     } else {
       expect(
         () ==>
-          $rm->invokeArgs($obj, [$expected, 'custom %s %d %f', 'msg', 1, 2.1]),
+          $rm->invokeArgs($obj, varray[$expected, 'custom %s %d %f', 'msg', 1, 2.1]),
       )->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     }
   }
@@ -255,7 +255,7 @@ final class ExpectObjTest extends HackTest {
         }
       },
     )->toThrowWhenCalledWith(
-      array(ExpectObjTestException::class),
+      varray[ExpectObjTestException::class],
       ExpectObjTestException::class,
     );
 
@@ -298,7 +298,7 @@ final class ExpectObjTest extends HackTest {
         }
       },
     )->toThrowWhenCalledWith(
-      array(ExpectObjTestException::class),
+      varray[ExpectObjTestException::class],
       ExpectObjTestException::class,
     );
   }
@@ -326,17 +326,17 @@ final class ExpectObjTest extends HackTest {
     expect(
       () ==> {
         expect(
-          array(
+          darray[
             'a' => 5,
             'b' => 4,
             'c' => 3,
-          ),
+          ],
         )->toHaveSameShapeAs(
-          array(
+          darray[
             'b' => 4,
             'c' => 3,
             'a' => 5,
-          ),
+          ],
         );
       },
     )->notToThrow();
@@ -365,13 +365,13 @@ final class ExpectObjTest extends HackTest {
     expect(
       () ==> {
         expect(Set {1, 2})->toHaveSameContentAs(Vector {2, 1});
-        expect(array(3))->toHaveSameContentAs(Map {1 => 3});
+        expect(varray[3])->toHaveSameContentAs(Map {1 => 3});
       },
     )->notToThrow();
   }
 
   public function testToHaveSameContentAsFailure(): void {
-    expect(() ==> expect(array(1, 2))->toHaveSameContentAs(Vector {1}))
+    expect(() ==> expect(varray[1, 2])->toHaveSameContentAs(Vector {1}))
       ->toThrow(ExpectationFailedException::class);
   }
 
@@ -415,17 +415,17 @@ final class ExpectObjTest extends HackTest {
     expect(
       () ==> {
         expect(
-          array(
+          darray[
             'a' => 5,
             'b' => 4,
             'c' => 3,
-          ),
+          ],
         )->toHaveSameShapeAs(
-          array(
+          darray[
             'a' => 4,
             'b' => 3,
             'c' => 5,
-          ),
+          ],
         );
       },
     )->toThrow(ExpectationFailedException::class);
