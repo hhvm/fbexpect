@@ -495,7 +495,7 @@ class ExpectObj<T> extends Assert {
    */
   public function notToThrow(?string $msg = null, mixed ...$args): void {
     $msg = \vsprintf($msg, $args);
-    $e = $this->tryCallWithArgsReturnException(array(), \Exception::class);
+    $e = $this->tryCallWithArgsReturnException(varray[], \Exception::class);
     if ($e !== null) {
       $msg = \sprintf(
         "%s was thrown: %s\n%s",
@@ -533,7 +533,7 @@ class ExpectObj<T> extends Assert {
   ): void {
     $msg = \vsprintf($msg, $args);
     $this->toThrowWhenCalledWith(
-      array(),
+      varray[],
       $exception_class,
       $expected_exception_message,
       $msg,
