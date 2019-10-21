@@ -227,30 +227,39 @@ class ExpectObj<T> extends Assert {
   }
 
   /**
-   * Assert: For strings, Str\contains($actual, $needle) !== false
-   *         For containers (array, Map, Set, etc) or objects which implement
-   *         Traversable, iterate through $actual and see if any element ==
-   *         $needle.
+   * Assert: iterate through $actual and see if any element == $needle.
    * Note:   If $needle is an object, === will be used.
    */
-  public function toContain(
-    mixed $needle,
+  public function toContain<TVal>(
+    TVal $needle,
     string $msg = '',
     mixed ...$args
-  ): void {
+  ): void where T as Traversable<TVal>{
     $msg = \vsprintf($msg, $args);
     $this->assertContains($needle, not_hack_array($this->var), $msg);
+  }
+
+  /**
+   * Assert: $actual contains the substring $expected
+   */
+  public function toContainSubstring(
+    string $expected,
+    string $msg = '',
+    mixed ...$args
+  ): void where T = string {
+    $msg = \vsprintf($msg, $args);
+    $this->assertContains($expected, $this->var, $msg);
   }
 
   /**
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toContainKey(
-    mixed $key,
+  public function toContainKey<TKey as arraykey, TVal>(
+    TKey $key,
     string $msg = '',
     mixed ...$args
-  ): void {
+  ): void where T as KeyedContainer<TKey, TVal> {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     invariant(
@@ -441,13 +450,19 @@ class ExpectObj<T> extends Assert {
   }
 
   /**
-   * Assert: For strings, Str\contains($actual, $needle) !== false
-   *         For containers (array, Map, Set, etc) or objects which implement
-   *         Traversable, iterate through $actual and make sure there is no
+   * Assert: iterate through $actual and make sure there is no
    *         element for which $element == $needle.
    * Note:   If $needle is an object, === will be used.
    */
-  public function toNotContain(mixed $expected, string $msg = '', mixed ...$args): void {
+  public function toNotContain<TVal>(TVal $expected, string $msg = '', mixed ...$args): void where T as Traversable<TVal> {
+    $msg = \vsprintf($msg, $args);
+    $this->assertNotContains($expected, not_hack_array($this->var), $msg);
+  }
+
+  /**
+   * Assert: $actual does not contain the substring $expected
+   */
+  public function toNotContainSubstring(string $expected, string $msg = '', mixed ...$args): void where T = string {
     $msg = \vsprintf($msg, $args);
     $this->assertNotContains($expected, not_hack_array($this->var), $msg);
   }
@@ -456,7 +471,7 @@ class ExpectObj<T> extends Assert {
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
-  public function toNotContainKey(arraykey $key, string $msg = '', mixed ...$args): void where T as KeyedContainer<arraykey, mixed> {
+  public function toNotContainKey<TKey as arraykey, TVal>(TKey $key, string $msg = '', mixed ...$args): void where T as KeyedContainer<TKey, TVal> {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     $this->assertFalse(\array_key_exists($key, $obj), $msg);
@@ -524,51 +539,32 @@ class ExpectObj<T> extends Assert {
    *
    *   expect(function() { invariant_violation('fail'); })
    *     ->toThrow(InvariantViolationException::class, 'fail');
+   *
+   * If `TRet` is an `Awaitable<_>` (e.g. if an async function is provided),
+   * the awaitable will be awaited.
    */
-  public function toThrow<Tclass as \Exception>(
-    classname<Tclass> $exception_class,
+  public function toThrow<TException as \Throwable, TRet>(
+    classname<TException> $exception_class,
     ?string $expected_exception_message = null,
     ?string $msg = null,
     mixed ...$args
-  ): void {
-    $msg = \vsprintf($msg, $args);
-    $this->toThrowWhenCalledWith(
-      varray[],
-      $exception_class,
-      $expected_exception_message,
-      $msg,
-    );
-  }
-
-  /**
-   * Asserts: Function throws exception of given type and with the given
-   *          exception message (optional)
-   *
-   * Example usage:
-   *
-   *   expect(
-   *     function($a) { if ($a == 'foo') { invariant_violation('fail'); }}
-   *   )->toThrowWhenCalledWith(array('foo'), 'InvariantViolationException');
-   */
-  public function toThrowWhenCalledWith<Tclass as \Exception>(
-    Container<mixed> $args,
-    classname<Tclass> $exception_class,
-    ?string $expected_exception_message = null,
-    ?string $desc = null,
-  ): void {
-    $exception = $this->tryCallWithArgsReturnException($args, $exception_class);
+  ): TException where T = (function(): TRet) {
+    $msg = \vsprintf($msg ?? '', $args);
+    $exception = $this->tryCallWithArgsReturnException(vec[], $exception_class);
 
     if (!$exception) {
       throw new \Exception(
-        $desc.": Expected exception ".$exception_class." wasn't thrown",
+        $msg.": Expected exception ".$exception_class." wasn't thrown",
       );
     }
 
     if ($expected_exception_message !== null) {
       $message = $exception->getMessage();
 
-      $this->assertContains($expected_exception_message, $message, $desc ?? '');
+      $this->assertContains($expected_exception_message, $message, $msg);
     }
+
+    return $exception;
   }
 
   /***************************************
@@ -576,7 +572,7 @@ class ExpectObj<T> extends Assert {
    **** Private implementation details ***
    ***************************************
    ***************************************/
-  private function tryCallWithArgsReturnException<Tclass as \Exception>(
+  private function tryCallWithArgsReturnException<Tclass as \Throwable>(
     Container<mixed> $args,
     classname<Tclass> $expected_exception_type,
   ): ?Tclass {

@@ -57,6 +57,9 @@ final class ExpectObjTest extends HackTest {
     expect(dict[])->toBeType('KeyedContainer');
     expect(varray[1, 2, 3])->toContain(2);
     expect(varray[1, 2, 3])->toNotContain(7);
+    expect('foo')->toContainSubstring('foo');
+    expect('foo')->toContainSubstring('o');
+    expect('foo')->toNotContainSubstring('a');
     expect(1)->toAlmostEqual(1);
     expect(null)->toAlmostEqual(null);
 
@@ -241,31 +244,6 @@ final class ExpectObjTest extends HackTest {
   //
   // Tests for toThrow methods
   //
-  public function testToThrowWhenCalledWithSuccess(): void {
-    expect(
-      function() {
-        throw new \Exception();
-      },
-    )->toThrow(\Exception::class);
-
-    expect(
-      (classname<\Exception> $class) ==> {
-        if ($class === ExpectObjTestException::class) {
-          throw new ExpectObjTestException();
-        }
-      },
-    )->toThrowWhenCalledWith(
-      varray[ExpectObjTestException::class],
-      ExpectObjTestException::class,
-    );
-
-    expect(
-      function() {
-        throw new ExpectObjTestException('test msg');
-      },
-    )->toThrow(ExpectObjTestException::class, 'test msg');
-  }
-
   public function testToThrowWithMessage(): void {
     expect(
       function() {
@@ -291,16 +269,14 @@ final class ExpectObjTest extends HackTest {
 
   public function testAwaitableFunctionGetsPrepped(): void {
     expect(
-      async (mixed $class) ==> {
+      async () ==> {
+        $class = ExpectObjTestException::class;
         await self::stopEagerExecution();
         if ($class === ExpectObjTestException::class) {
           throw new ExpectObjTestException();
         }
       },
-    )->toThrowWhenCalledWith(
-      varray[ExpectObjTestException::class],
-      ExpectObjTestException::class,
-    );
+    )->toThrow(ExpectObjTestException::class);
   }
 
   public function testToHaveSameShapeAsSuccess(): void {
@@ -466,9 +442,14 @@ final class ExpectObjTest extends HackTest {
     try {
       expect("a\nb\nd\n")->toBeSame("a\nb\nc\n");
     } catch (ExpectationFailedException $e) {
-      expect($e->getMessage())->toContain(" a\n b\n-c\n+d\n");
+      expect($e->getMessage())->toContainSubstring(" a\n b\n-c\n+d\n");
       return;
     }
     self::fail("Should have thrown an exception");
+  }
+
+  public function testToThrowReturnsException(): void {
+    $e = expect(() ==> { throw new \Exception("Hello, world"); })->toThrow(\Exception::class);
+    expect($e->getMessage())->toContainSubstring('Hello, world');
   }
 }
