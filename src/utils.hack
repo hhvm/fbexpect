@@ -34,7 +34,8 @@ function print_type(mixed $value): string {
 }
 
 function is_iterable(mixed $value): bool {
-  return \is_array($value) || (\is_object($value) && ($value is Traversable<_>));
+  return \is_array($value) ||
+    (\is_object($value) && ($value is Traversable<_>));
 }
 
 function is_type(mixed $value): bool {

@@ -216,21 +216,23 @@ final class ExpectObjTest extends HackTest {
       expect(() ==> $rm->invokeArgs($obj, varray['custom msg']))
         ->toThrow(ExpectationFailedException::class, 'custom msg');
     } else {
-      expect(() ==> $rm->invokeArgs($obj, varray[$expected, 'custom msg']))->toThrow(
-        ExpectationFailedException::class,
-        'custom msg',
-      );
+      expect(() ==> $rm->invokeArgs($obj, varray[$expected, 'custom msg']))
+        ->toThrow(ExpectationFailedException::class, 'custom msg');
       ;
     }
 
     // And with funky sprintfification
     if ($expected === self::EMPTY_VALUE) {
-      expect(() ==> $rm->invokeArgs($obj, varray['custom %s %d %f', 'msg', 1, 2.1]))
+      expect(
+        () ==> $rm->invokeArgs($obj, varray['custom %s %d %f', 'msg', 1, 2.1]),
+      )
         ->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     } else {
       expect(
-        () ==>
-          $rm->invokeArgs($obj, varray[$expected, 'custom %s %d %f', 'msg', 1, 2.1]),
+        () ==> $rm->invokeArgs(
+          $obj,
+          varray[$expected, 'custom %s %d %f', 'msg', 1, 2.1],
+        ),
       )->toThrow(ExpectationFailedException::class, 'custom msg 1 2.1');
     }
   }
@@ -449,7 +451,9 @@ final class ExpectObjTest extends HackTest {
   }
 
   public function testToThrowReturnsException(): void {
-    $e = expect(() ==> { throw new \Exception("Hello, world"); })->toThrow(\Exception::class);
+    $e = expect(() ==> {
+      throw new \Exception("Hello, world");
+    })->toThrow(\Exception::class);
     expect($e->getMessage())->toContainSubstring('Hello, world');
   }
 }
