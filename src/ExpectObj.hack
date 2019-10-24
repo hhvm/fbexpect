@@ -243,6 +243,18 @@ class ExpectObj<T> extends Assert {
   }
 
   /**
+   * Assert: $actual contains the substring $expected
+   */
+  public function toContainSubstring(
+    string $expected,
+    string $msg = '',
+    mixed ...$args
+  ): void where T = string {
+    $msg = \vsprintf($msg, $args);
+    $this->assertContains($expected, $this->var, $msg);
+  }
+
+  /**
    * Assert: That the KeyedTraversible $key has a key set.
    * Note:   If $key is a Set, use assertContains.
    */
@@ -449,6 +461,14 @@ class ExpectObj<T> extends Assert {
    * Note:   If $needle is an object, === will be used.
    */
   public function toNotContain(mixed $expected, string $msg = '', mixed ...$args): void {
+    $msg = \vsprintf($msg, $args);
+    $this->assertNotContains($expected, not_hack_array($this->var), $msg);
+  }
+
+  /**
+   * Assert: $actual does not contain the substring $expected
+   */
+  public function toNotContainSubstring(string $expected, string $msg = '', mixed ...$args): void where T = string {
     $msg = \vsprintf($msg, $args);
     $this->assertNotContains($expected, not_hack_array($this->var), $msg);
   }

@@ -57,6 +57,12 @@ final class ExpectObjTest extends HackTest {
     expect(dict[])->toBeType('KeyedContainer');
     expect(array(1, 2, 3))->toContain(2);
     expect(array(1, 2, 3))->toNotContain(7);
+    expect('foo')->toContain('foo');
+    expect('foo')->toContain('o');
+    expect('foo')->toNotContain('a');
+    expect('foo')->toContainSubstring('foo');
+    expect('foo')->toContainSubstring('o');
+    expect('foo')->toNotContainSubstring('a');
     expect(1)->toAlmostEqual(1);
     expect(null)->toAlmostEqual(null);
 
@@ -150,6 +156,9 @@ final class ExpectObjTest extends HackTest {
       array('toContain', dict['x' => 1, 'y' => 2, 'z' => 3], 7),
       array('toNotContain', dict['x' => 1, 'y' => 2, 'z' => 3], 2),
       array('toContain', dict[], 2),
+
+      array('toContainSubstring', 'foo', 'a'),
+      array('toNotContainSubstring', 'foo', 'o'),
 
       array('toContainKey', dict['x' => 1, 'y' => 2, 'z' => 3], '1'),
       array('toNotContainKey', dict['x' => 1, 'y' => 2, 'z' => 3], 'y'),
