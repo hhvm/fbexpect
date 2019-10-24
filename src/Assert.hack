@@ -667,8 +667,9 @@ abstract class Assert {
   }
 
   private static function sorted<T>(Traversable<T> $x): ImmVector<T> {
-    $copy = Vector::fromItems($x);
+    $copy = vec($x);
     \sort(inout $copy);
-    return $copy->toImmVector();
+    /* HH_FIXME[4110] sort() is not generic */
+    return new ImmVector($copy);
   }
 }
