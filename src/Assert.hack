@@ -668,7 +668,7 @@ abstract class Assert {
 
   private static function sorted<T>(Traversable<T> $x): ImmVector<T> {
     $copy = Vector::fromItems($x);
-    \sort(&$copy);
+    \sort(inout $copy);
     return $copy->toImmVector();
   }
 }
