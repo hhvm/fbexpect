@@ -9,3 +9,6 @@ user_attributes=
 
 ; Once the minimum hhvm version hits 4.25 this setting can be safely enabled
 disallow_array_literal = false
+
+; Once hhvm-autoload supports disallow_silence this setting can be safely enabled
+disallow_silence = false
