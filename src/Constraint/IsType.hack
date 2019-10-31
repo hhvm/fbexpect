@@ -30,12 +30,17 @@ class IsType {
       'array' => ($x ==> \is_array($x)),
       'object' => ($x ==> \is_object($x)),
       'resource' => (
-        $x ==> ($x is resource) ||
-          (
-            @\get_resource_type(
-              /* HH_FIXME[4110] closed resources fail is resource */ $x,
-            ) is string
-          )
+        $x ==> {
+          if ($x is resource) {
+            return true;
+          }
+          $error_level = \error_reporting(0);
+          $is_resource = \get_resource_type(
+            /* HH_FIXME[4110] closed resources fail is resource */ $x,
+          ) is string;
+          \error_reporting($error_level);
+          return $is_resource;
+        }
       ),
       'scalar' => ($x ==> \is_scalar($x)),
       'callable' => ($x ==> \is_callable($x)),
