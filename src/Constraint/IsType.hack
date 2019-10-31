@@ -29,7 +29,7 @@ class IsType {
       'null' => ($x ==> $x === null),
       'array' => ($x ==> \is_array($x)),
       'object' => ($x ==> \is_object($x)),
-            'resource' => (
+      'resource' => (
         $x ==> {
           if ($x is resource) {
             return true;
