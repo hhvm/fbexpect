@@ -34,7 +34,7 @@ class IsType {
           if ($x is resource) {
             return true;
           }
-          $error_level = \error_reporting();
+          $error_level = \error_reporting(0);
           $is_resource = \get_resource_type(
             /* HH_FIXME[4110] closed resources fail is resource */ $x,
           ) is string;
