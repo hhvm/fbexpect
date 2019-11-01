@@ -15,6 +15,21 @@ use type Facebook\HackTest\ExpectationFailedException;
 
 abstract class Assert {
 
+  private static function isDiffable(mixed $x): bool {
+    if ($x is bool || $x is arraykey) {
+      return true;
+    }
+    if ($x is Container<_>) {
+      foreach ($x as $elem) {
+        if (!self::isDiffable($elem)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   public function assertSame(
     mixed $expected,
     mixed $actual,
@@ -24,10 +39,16 @@ abstract class Assert {
       return;
     }
 
-    if ($expected is string && $actual is string) {
+    if (self::isDiffable($expected) && self::isDiffable($actual)) {
+      if (!$expected is string) {
+        $expected = \var_export($expected, true);
+      }
+      if (!$actual is string) {
+        $actual = \var_export($actual, true);
+      }
       throw new ExpectationFailedException(
         Str\format(
-          "%s\nFailed asserting that two strings are the same:\n%s\n",
+          "%s\nFailed asserting that two values are the same:\n%s\n",
           $message,
           StringDiff::lines($expected, $actual)->getUnifiedDiff(),
         ),
