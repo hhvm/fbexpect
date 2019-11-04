@@ -54,10 +54,9 @@ abstract class Assert {
     }
     throw new ExpectationFailedException(
       Str\format(
-        "%s\nFailed asserting that %s is not the same as %s",
+        "%s\nFailed asserting that values differed; both are %s",
         $message,
         \var_export($actual, true),
-        \var_export($expected, true),
       ),
     );
   }
