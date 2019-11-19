@@ -20,8 +20,7 @@ function is_any_array(mixed $value): bool {
 
 function not_hack_array(mixed $value): mixed {
   if (is_any_array($value) && !\is_array($value)) {
-    /* HH_IGNORE_ERROR[4007] sketchy array cast */
-    return (array) $value;
+    return varray($value as Traversable<_>);
   }
   return $value;
 }
