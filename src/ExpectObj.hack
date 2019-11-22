@@ -236,7 +236,11 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): void where T as Traversable<TVal> {
     $msg = \vsprintf($msg, $args);
-    $this->assertContains($needle, not_hack_array($this->var), $msg);
+    $this->assertContains(
+      $needle,
+      self::hackArraysToDVArrays($this->var),
+      $msg,
+    );
   }
 
   /**
@@ -460,7 +464,11 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): void where T as Traversable<TVal> {
     $msg = \vsprintf($msg, $args);
-    $this->assertNotContains($expected, not_hack_array($this->var), $msg);
+    $this->assertNotContains(
+      $expected,
+      self::hackArraysToDVArrays($this->var),
+      $msg,
+    );
   }
 
   /**
@@ -472,7 +480,7 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): void where T = string {
     $msg = \vsprintf($msg, $args);
-    $this->assertNotContains($expected, not_hack_array($this->var), $msg);
+    $this->assertNotContains($expected, $this->var, $msg);
   }
 
   /**
@@ -607,5 +615,15 @@ class ExpectObj<T> extends Assert {
     }
 
     return null;
+  }
+
+  private static function hackArraysToDVArrays(mixed $maybe_array): mixed {
+    return $maybe_array is vec<_>
+      ? varray($maybe_array)
+      : (
+          $maybe_array is dict<_, _> || $maybe_array is keyset<_>
+            ? darray($maybe_array)
+            : $maybe_array
+        );
   }
 }
