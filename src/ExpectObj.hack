@@ -197,7 +197,9 @@ class ExpectObj<T> extends Assert {
     $msg = \vsprintf($msg, $args);
     $obj = $this->var;
     $this->assertInstanceOf($class_or_interface, $obj, $msg);
-    return /* HH_IGNORE_ERROR[4110] */ $obj;
+    return
+      /* HH_IGNORE_ERROR[4110] Typechecker can't understand assertInstanceOf */
+      $obj;
   }
 
   // Asserts: $actual matches $expected regular expression
@@ -304,7 +306,6 @@ class ExpectObj<T> extends Assert {
     $msg = \vsprintf($msg, $args);
 
     $value = $this->var;
-    /* HH_FIXME[4110] KeyedContainer<_, _> always has arraykey keys */
     $this->assertKeyAndValueEquals(
       $expected as KeyedContainer<_, _>,
       $value as KeyedContainer<_, _>,
@@ -345,7 +346,7 @@ class ExpectObj<T> extends Assert {
       print_type($actual),
     );
 
-    $this->assertIsSorted($actual, /* HH_FIXME[4110] */ $comparator, $msg);
+    $this->assertIsSorted($actual, $comparator, $msg);
   }
 
   /**
@@ -399,7 +400,7 @@ class ExpectObj<T> extends Assert {
     $msg = \vsprintf($msg, $args);
     $val = $this->var;
     $this->assertNotNull($val, $msg);
-    return /* HH_IGNORE_ERROR[4110] */ $val;
+    return $val as nonnull;
   }
 
   /**
