@@ -10,8 +10,7 @@
 namespace Facebook\FBExpect;
 
 class ExpectObj<T> extends Assert {
-  public function __construct(private T $var) {
-  }
+  public function __construct(private T $var) {}
 
   /**************************************
    **************************************
@@ -236,7 +235,7 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): void where T as Traversable<TVal> {
     $msg = \vsprintf($msg, $args);
-    $this->assertContains($needle, not_hack_array($this->var), $msg);
+    $this->assertContains($needle, $this->var, $msg);
   }
 
   /**
@@ -460,7 +459,7 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): void where T as Traversable<TVal> {
     $msg = \vsprintf($msg, $args);
-    $this->assertNotContains($expected, not_hack_array($this->var), $msg);
+    $this->assertNotContains($expected, $this->var, $msg);
   }
 
   /**
@@ -472,7 +471,7 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): void where T = string {
     $msg = \vsprintf($msg, $args);
-    $this->assertNotContains($expected, not_hack_array($this->var), $msg);
+    $this->assertNotContains($expected, $this->var, $msg);
   }
 
   /**

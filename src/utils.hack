@@ -18,14 +18,6 @@ function is_any_array(mixed $value): bool {
   );
 }
 
-function not_hack_array(mixed $value): mixed {
-  if (is_any_array($value) && !\is_array($value)) {
-    /* HH_IGNORE_ERROR[4007] sketchy array cast */
-    return (array) $value;
-  }
-  return $value;
-}
-
 function print_type(mixed $value): string {
   if (\is_object($value)) {
     return \get_class($value);
