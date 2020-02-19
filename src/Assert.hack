@@ -579,10 +579,7 @@ abstract class Assert {
     Traversable<T> $actual,
     string $msg = '',
   ): void {
-    $expected = self::sorted($expected)->toArray();
-    $actual = self::sorted($actual)->toArray();
-
-    $this->assertEquals($expected, $actual, $msg);
+    $this->assertEquals(self::sorted($expected), self::sorted($actual), $msg);
   }
   /**
    * Checks that a collection is sorted according to some criterion.
@@ -685,7 +682,7 @@ abstract class Assert {
     return $out;
   }
 
-  private static function sorted<T>(Traversable<T> $x): ImmVector<T> {
-    return new ImmVector(Vec\sort($x));
+  private static function sorted<T>(Traversable<T> $x): vec<T> {
+    return Vec\sort($x);
   }
 }
