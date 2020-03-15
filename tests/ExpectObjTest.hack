@@ -456,4 +456,49 @@ final class ExpectObjTest extends HackTest {
     })->toThrow(\Exception::class);
     expect($e->getMessage())->toContainSubstring('Hello, world');
   }
+
+  public function testToTriggerAnError(): void {
+    \set_error_handler('not_a_function');
+
+    expect(
+      () ==> expect(() ==> \trigger_error('Herp derp', \E_USER_WARNING))
+        ->toTriggerAnError(),
+    )->notToThrow();
+
+    expect(() ==> expect(() ==> {})->toTriggerAnError())->toThrow(
+      ExpectationFailedException::class,
+      'Expected an error to be triggered, but got none.',
+    );
+
+    expect(
+      () ==> expect(() ==> \trigger_error('Herp derp', \E_USER_WARNING))
+        ->toTriggerAnError(\E_USER_WARNING, 'Herp derp, da'),
+    )->notToThrow();
+
+    expect(
+      () ==> expect(() ==> \trigger_error('Herpi derp doom', \E_USER_NOTICE))
+        ->toTriggerAnError(\E_USER_WARNING, 'Herpi durp'),
+    )->toThrow(ExpectationFailedException::class, 'Error level incorrect');
+
+    expect(
+      () ==> expect(() ==> \trigger_error('Giant squid', \E_USER_WARNING))
+        ->toTriggerAnError(\E_USER_WARNING, 'Herpi durp'),
+    )->toThrow(ExpectationFailedException::class, 'Error message incorrect');
+
+    expect(
+      () ==> expect(() ==> \trigger_error('', \E_USER_WARNING))
+        ->toTriggerAnError(\E_USER_NOTICE, '', '%s, %d', 'ess', 6),
+    )->toThrow(ExpectationFailedException::class, 'ess, 6');
+
+    expect(
+      () ==> expect(() ==> invariant_violation('something went wrong'))
+        ->toTriggerAnError(),
+    )
+      ->toThrow(InvariantException::class, 'something went wrong');
+
+    $previous = \set_error_handler('something_else');
+    \restore_error_handler();
+    \restore_error_handler();
+    expect($previous)->toEqual('not_a_function', 'Error handler contaminated');
+  }
 }

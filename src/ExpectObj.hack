@@ -9,7 +9,9 @@
 
 namespace Facebook\FBExpect;
 
+use namespace Facebook\HackTest;
 use namespace HH\Lib\{Str, Vec};
+use type HH\Lib\Ref;
 
 class ExpectObj<T> extends Assert {
   public function __construct(private T $var) {}
@@ -584,6 +586,53 @@ class ExpectObj<T> extends Assert {
     }
 
     return $exception;
+  }
+
+  public function toTriggerAnError(
+    ?int $level = null,
+    ?string $expected_error_message = null,
+    ?Str\SprintfFormatString $msg = null,
+    mixed ...$args
+  ): ?(int, string) where T = (function(): mixed) {
+    $last_error = new Ref<?(int, string)>(null);
+    $error_level = \error_reporting($level);
+    \set_error_handler((int $level, string $message) ==> {
+      $last_error->value = tuple($level, $message);
+    });
+
+    try {
+      ($this->var)();
+    } finally {
+      \error_reporting($error_level);
+      \restore_error_handler();
+    }
+
+    $msg = $msg is null ? null : \vsprintf($msg, $args);
+    if ($last_error->value is null) {
+      throw new HackTest\ExpectationFailedException(
+        'Expected an error to be triggered, but got none.',
+      );
+    }
+
+    $error = $last_error->value;
+
+    if ($level is nonnull) {
+      $this->assertEquals(
+        $level,
+        $last_error->value[0],
+        $msg ?? 'Error level incorrect',
+      );
+    }
+
+    if ($expected_error_message is nonnull) {
+      $this->assertContains(
+        $error[1],
+        $expected_error_message,
+        $msg ?? 'Error message incorrect',
+      );
+    }
+
+    return $error;
   }
 
   /***************************************
