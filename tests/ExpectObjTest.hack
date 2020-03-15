@@ -491,6 +491,14 @@ final class ExpectObjTest extends HackTest {
     )->toThrow(ExpectationFailedException::class, 'ess, 6');
 
     expect(
+      () ==> expect(async () ==> {
+        await \HH\Asio\later();
+        \trigger_error('asio!!', \E_USER_WARNING);
+      })
+        ->toTriggerAnError(\E_USER_NOTICE, 'asio!!'),
+    )->toThrow(ExpectationFailedException::class, 'Error level incorrect');
+
+    expect(
       () ==> expect(() ==> invariant_violation('something went wrong'))
         ->toTriggerAnError(),
     )

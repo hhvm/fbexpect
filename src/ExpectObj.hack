@@ -601,7 +601,10 @@ class ExpectObj<T> extends Assert {
     });
 
     try {
-      ($this->var)();
+      $return = ($this->var)();
+      if ($return is Awaitable<_>) {
+        \HH\Asio\join($return);
+      }
     } finally {
       \error_reporting($error_level);
       \restore_error_handler();
