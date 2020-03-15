@@ -595,7 +595,7 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): ?(int, string) where T = (function(): mixed) {
     $last_error = new Ref<?(int, string)>(null);
-    $error_level = \error_reporting($level);
+    $error_level = \error_reporting(\E_ALL);
     \set_error_handler((int $level, string $message) ==> {
       $last_error->value = tuple($level, $message);
     });
