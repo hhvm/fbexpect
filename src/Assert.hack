@@ -542,7 +542,7 @@ abstract class Assert {
         $part = '['.\var_export($key, true).']';
       } else if (\is_object($actual)) {
         $actual_value = /* HH_FIXME[2011] Dynamic property access */ $actual->$key;
-        $part = "->".$key;
+        $part = '->'.$key;
       } else {
         $actual_value = null;
         $part = null;

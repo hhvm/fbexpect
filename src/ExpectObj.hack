@@ -566,7 +566,7 @@ class ExpectObj<T> extends Assert {
 
     if (!$exception) {
       throw new \Exception(
-        $msg.": Expected exception ".$exception_class." wasn't thrown",
+        $msg.': Expected exception '.$exception_class." wasn't thrown",
       );
     }
 
@@ -593,6 +593,7 @@ class ExpectObj<T> extends Assert {
       $returned = \call_user_func_array($callable, $args);
 
       if ($returned is Awaitable<_>) {
+        /* HHAST_IGNORE_ERROR[DontUseAsioJoin] */
         \HH\Asio\join($returned);
       }
     } catch (\Exception $e) {

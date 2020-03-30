@@ -447,12 +447,12 @@ final class ExpectObjTest extends HackTest {
       expect($e->getMessage())->toContainSubstring(" a\n b\n-c\n+d\n");
       return;
     }
-    self::fail("Should have thrown an exception");
+    self::fail('Should have thrown an exception');
   }
 
   public function testToThrowReturnsException(): void {
     $e = expect(() ==> {
-      throw new \Exception("Hello, world");
+      throw new \Exception('Hello, world');
     })->toThrow(\Exception::class);
     expect($e->getMessage())->toContainSubstring('Hello, world');
   }
