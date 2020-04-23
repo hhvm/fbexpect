@@ -9,6 +9,8 @@
 
 namespace Facebook\FBExpect;
 
+use namespace HH\Lib\{Str, Vec};
+
 class ExpectObj<T> extends Assert {
   public function __construct(private T $var) {}
 
@@ -524,27 +526,22 @@ class ExpectObj<T> extends Assert {
     $msg = \vsprintf($msg, $args);
     $e = $this->tryCallWithArgsReturnException(varray[], \Exception::class);
     if ($e !== null) {
-      $msg = \sprintf(
+      $msg = Str\format(
         "%s was thrown: %s\n%s",
         \get_class($e),
         $msg,
-        \implode("\n  ", \array_map(
-          (mixed $t) ==> {
+        Vec\map(
+          $e->getTrace(),
+          $t ==> {
             $t = $t as KeyedContainer<_, _>;
-            return \sprintf(
-              '%s: %s',
-              idx(
-                /* HH_FIXME[4110] */ $t,
-                'file',
-              ),
-              idx(
-                /* HH_FIXME[4110] */ $t,
-                'line',
-              ),
+            return Str\format(
+              '%s: %d',
+              idx($t, 'file') as ?string ?? '<no file>',
+              idx($t, 'line') as ?int ?? -1,
             );
           },
-          $e->getTrace(),
-        )),
+        )
+          |> Str\join($$, "\n  "),
       );
     }
     $this->assertNull($e, $msg);
