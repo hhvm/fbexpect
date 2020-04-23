@@ -529,9 +529,19 @@ class ExpectObj<T> extends Assert {
         \get_class($e),
         $msg,
         \implode("\n  ", \array_map(
-          $t ==> {
+          (mixed $t) ==> {
             $t = $t as KeyedContainer<_, _>;
-            return \sprintf('%s: %s', idx($t, 'file'), idx($t, 'line'));
+            return \sprintf(
+              '%s: %s',
+              idx(
+                /* HH_FIXME[4110] */ $t,
+                'file',
+              ),
+              idx(
+                /* HH_FIXME[4110] */ $t,
+                'line',
+              ),
+            );
           },
           $e->getTrace(),
         )),
