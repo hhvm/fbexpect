@@ -603,6 +603,9 @@ class ExpectObj<T> extends Assert {
     try {
       $return = ($this->var)();
       if ($return is Awaitable<_>) {
+        /*HHAST_FIXME[DontUseAsioJoin]
+          We cannot safely use await here,
+          since we are messing with the error handler.*/
         \HH\Asio\join($return);
       }
     } finally {
