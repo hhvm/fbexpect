@@ -10,8 +10,9 @@
 namespace Facebook\FBExpect;
 
 use namespace Facebook\HackTest;
-use namespace HH\Lib\{Str, Vec};
+use namespace HH\Lib\{C, Str, Vec};
 use type HH\Lib\Ref;
+use type Facebook\HackTest\ExpectationFailedException;
 
 class ExpectObj<T> extends Assert {
   public function __construct(private T $var) {}
@@ -593,11 +594,11 @@ class ExpectObj<T> extends Assert {
     ?string $expected_error_message = null,
     ?Str\SprintfFormatString $msg = null,
     mixed ...$args
-  ): ?(int, string) where T = (function(): mixed) {
-    $last_error = new Ref<?(int, string)>(null);
+  ): void where T = (function(): mixed) {
+    $captured_errors = new Ref<vec<(int, string)>>(vec[]);
     $error_level = \error_reporting(\E_ALL);
     \set_error_handler((int $level, string $message) ==> {
-      $last_error->value = tuple($level, $message);
+      $captured_errors->value[] = tuple($level, $message);
     });
 
     try {
@@ -613,32 +614,37 @@ class ExpectObj<T> extends Assert {
       \restore_error_handler();
     }
 
-    $msg = $msg is null ? null : \vsprintf($msg, $args);
-    if ($last_error->value is null) {
+    $message = $msg is null ? '' : \vsprintf($msg, $args);
+    if (C\is_empty($captured_errors->value)) {
       throw new HackTest\ExpectationFailedException(
         'Expected an error to be triggered, but got none.',
       );
     }
 
-    $error = $last_error->value;
+    $errors = $captured_errors->value;
 
-    if ($level is nonnull) {
-      $this->assertEquals(
-        $level,
-        $last_error->value[0],
-        $msg ?? 'Error level incorrect',
-      );
+    $passes = C\any(
+      $errors,
+      $e ==> ($e[0] === $level || $level is null) &&
+        (
+          $expected_error_message is null ||
+          Str\contains($e[1], $expected_error_message)
+        ),
+    );
+
+    if ($passes) {
+      return;
     }
 
-    if ($expected_error_message is nonnull) {
-      $this->assertContains(
-        $error[1],
-        $expected_error_message,
-        $msg ?? 'Error message incorrect',
-      );
-    }
-
-    return $error;
+    throw new ExpectationFailedException(
+      Str\format(
+        "%sFailed asserting that the correct kind of error was triggered:\n Expected level: %s\n Expected message: %s\n Got: %s",
+        $message,
+        (string)($level ?? '<any>'),
+        (string)($expected_error_message ?? '<any>'),
+        \var_export($errors, true),
+      ),
+    );
   }
 
   /***************************************

@@ -472,23 +472,50 @@ final class ExpectObjTest extends HackTest {
 
     expect(
       () ==> expect(() ==> \trigger_error('Herp derp', \E_USER_WARNING))
-        ->toTriggerAnError(\E_USER_WARNING, 'Herp derp, da'),
+        ->toTriggerAnError(\E_USER_WARNING, 'Herp derp'),
     )->notToThrow();
 
+    // Incorrect error level
     expect(
-      () ==> expect(() ==> \trigger_error('Herpi derp doom', \E_USER_NOTICE))
+      () ==> expect(() ==> \trigger_error('Herpi durp', \E_USER_NOTICE))
         ->toTriggerAnError(\E_USER_WARNING, 'Herpi durp'),
-    )->toThrow(ExpectationFailedException::class, 'Error level incorrect');
+    )->toThrow(ExpectationFailedException::class);
 
+    expect(
+      () ==> expect(() ==> \trigger_error('Herpi derp doom', \E_USER_WARNING))
+        ->toTriggerAnError(\E_USER_WARNING, 'Herpi derp'),
+    )->notToThrow();
+
+    // Incorrect error message
     expect(
       () ==> expect(() ==> \trigger_error('Giant squid', \E_USER_WARNING))
         ->toTriggerAnError(\E_USER_WARNING, 'Herpi durp'),
-    )->toThrow(ExpectationFailedException::class, 'Error message incorrect');
+    )->toThrow(ExpectationFailedException::class);
 
     expect(
       () ==> expect(() ==> \trigger_error('', \E_USER_WARNING))
         ->toTriggerAnError(\E_USER_NOTICE, '', '%s, %d', 'ess', 6),
-    )->toThrow(ExpectationFailedException::class, 'ess, 6');
+    )->toThrow(ExpectationFailedException::class);
+
+    expect(
+      () ==> expect(() ==> {
+        \trigger_error('The first error');
+        \trigger_error('The second error');
+        \trigger_error('The third error');
+        \trigger_error('The fourth error');
+      })
+        ->toTriggerAnError(\E_USER_NOTICE, 'The third error'),
+    )->notToThrow();
+
+    expect(
+      () ==> expect(() ==> {
+        \trigger_error('The first error');
+        \trigger_error('The second error');
+        \trigger_error('The third error');
+        \trigger_error('The fourth error');
+      })
+        ->toTriggerAnError(\E_USER_NOTICE, 'The fifth error'),
+    )->toThrow(ExpectationFailedException::class);
 
     expect(
       () ==> expect(async () ==> {
@@ -496,7 +523,7 @@ final class ExpectObjTest extends HackTest {
         \trigger_error('asio!!', \E_USER_WARNING);
       })
         ->toTriggerAnError(\E_USER_NOTICE, 'asio!!'),
-    )->toThrow(ExpectationFailedException::class, 'Error level incorrect');
+    )->toThrow(ExpectationFailedException::class);
 
     expect(
       () ==> expect(() ==> invariant_violation('something went wrong'))
