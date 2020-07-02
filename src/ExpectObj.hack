@@ -9,7 +9,10 @@
 
 namespace Facebook\FBExpect;
 
-use namespace HH\Lib\{Str, Vec};
+use namespace Facebook\HackTest;
+use namespace HH\Lib\{C, Str, Vec};
+use type HH\Lib\Ref;
+use type Facebook\HackTest\ExpectationFailedException;
 
 class ExpectObj<T> extends Assert {
   public function __construct(private T $var) {}
@@ -584,6 +587,64 @@ class ExpectObj<T> extends Assert {
     }
 
     return $exception;
+  }
+
+  public function toTriggerAnError(
+    ?int $level = null,
+    ?string $expected_error_message = null,
+    ?Str\SprintfFormatString $msg = null,
+    mixed ...$args
+  ): void where T = (function(): mixed) {
+    $captured_errors = new Ref<vec<(int, string)>>(vec[]);
+    $error_level = \error_reporting(\E_ALL);
+    \set_error_handler((int $level, string $message) ==> {
+      $captured_errors->value[] = tuple($level, $message);
+    });
+
+    try {
+      $return = ($this->var)();
+      if ($return is Awaitable<_>) {
+        /*HHAST_FIXME[DontUseAsioJoin]
+          We cannot safely use await here,
+          since we are messing with the error handler.*/
+        \HH\Asio\join($return);
+      }
+    } finally {
+      \error_reporting($error_level);
+      \restore_error_handler();
+    }
+
+    $message = $msg is null ? '' : \vsprintf($msg, $args);
+    if (C\is_empty($captured_errors->value)) {
+      throw new HackTest\ExpectationFailedException(
+        'Expected an error to be triggered, but got none.',
+      );
+    }
+
+    $errors = $captured_errors->value;
+
+    $passes = C\any(
+      $errors,
+      $e ==> ($e[0] === $level || $level is null) &&
+        (
+          $expected_error_message is null ||
+          Str\contains($e[1], $expected_error_message)
+        ),
+    );
+
+    if ($passes) {
+      return;
+    }
+
+    throw new ExpectationFailedException(
+      Str\format(
+        "%sFailed asserting that the correct kind of error was triggered:\n Expected level: %s\n Expected message: %s\n Got: %s",
+        $message,
+        (string)($level ?? '<any>'),
+        (string)($expected_error_message ?? '<any>'),
+        \var_export($errors, true),
+      ),
+    );
   }
 
   /***************************************
