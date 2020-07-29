@@ -117,7 +117,7 @@ final class ExpectObjTest extends HackTest {
    *   [method_name, test value, expected value (if necessary)]
    *
    */
-  public function provideFailureCases(): vec<array<mixed>> {
+  public function provideFailureCases(): vec<varray<mixed>> {
     $o = new \stdClass();
     return vec[
       varray['toBePHPEqual', false, true],
