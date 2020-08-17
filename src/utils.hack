@@ -10,12 +10,7 @@
 namespace Facebook\FBExpect;
 
 function is_any_array(mixed $value): bool {
-  return (
-    \is_array($value) ||
-    ($value is dict<_, _>) ||
-    ($value is vec<_>) ||
-    ($value is keyset<_>)
-  );
+  return \HH\is_any_array($value);
 }
 
 function print_type(mixed $value): string {
@@ -26,7 +21,7 @@ function print_type(mixed $value): string {
 }
 
 function is_iterable(mixed $value): bool {
-  return \is_array($value) ||
+  return \HH\is_any_array($value) ||
     (\is_object($value) && ($value is Traversable<_>));
 }
 

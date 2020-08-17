@@ -27,7 +27,7 @@ class IsType {
       'boolean' => ($x ==> ($x is bool)),
       'bool' => ($x ==> ($x is bool)),
       'null' => ($x ==> $x === null),
-      'array' => ($x ==> \is_array($x)),
+      'array' => ($x ==> \HH\is_php_array($x)),
       'object' => ($x ==> \is_object($x)),
       'resource' => (
         $x ==> {
