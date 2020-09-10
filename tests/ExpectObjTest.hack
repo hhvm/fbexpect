@@ -536,4 +536,25 @@ final class ExpectObjTest extends HackTest {
     \restore_error_handler();
     expect($previous)->toEqual('not_a_function', 'Error handler contaminated');
   }
+
+  /**
+   * Test that all reasonable ways of providing a (function(): mixed) work.
+   */
+  public function testCallables(): void {
+    expect(() ==> self::exampleStaticCallable())
+      ->toThrow(\Exception::class, 'Static method called!');
+    expect(class_meth(self::class, 'exampleStaticCallable'))
+      ->toThrow(\Exception::class, 'Static method called!');
+    expect(inst_meth($this, 'exampleInstanceCallable'))
+      ->toThrow(\Exception::class, 'Instance method called!');
+    expect(fun('time'))->notToThrow();
+  }
+
+  public static function exampleStaticCallable(): void {
+    throw new \Exception('Static method called!');
+  }
+
+  public function exampleInstanceCallable(): void {
+    throw new \Exception('Instance method called!');
+  }
 }

@@ -525,9 +525,12 @@ class ExpectObj<T> extends Assert {
    *
    *   expect( () ==> invariant_violation('...') )->notToThrow(); // would fail
    */
-  public function notToThrow(?string $msg = null, mixed ...$args): void {
+  public function notToThrow(
+    ?string $msg = null,
+    mixed ...$args
+  ): void where T as (function(): mixed) {
     $msg = \vsprintf($msg, $args);
-    $e = $this->tryCallWithArgsReturnException(varray[], \Exception::class);
+    $e = $this->tryCallReturnException(\Exception::class);
     if ($e !== null) {
       $msg = Str\format(
         "%s was thrown: %s\n%s",
@@ -572,7 +575,7 @@ class ExpectObj<T> extends Assert {
     mixed ...$args
   ): TException where T = (function(): TRet) {
     $msg = \vsprintf($msg ?? '', $args);
-    $exception = $this->tryCallWithArgsReturnException(vec[], $exception_class);
+    $exception = $this->tryCallReturnException($exception_class);
 
     if (!$exception) {
       throw new \Exception(
@@ -652,13 +655,12 @@ class ExpectObj<T> extends Assert {
    **** Private implementation details ***
    ***************************************
    ***************************************/
-  private function tryCallWithArgsReturnException<Tclass as \Throwable>(
-    Container<mixed> $args,
+  private function tryCallReturnException<Tclass as \Throwable>(
     classname<Tclass> $expected_exception_type,
-  ): ?Tclass {
+  ): ?Tclass where T as (function(): mixed) {
     try {
       $callable = $this->var;
-      $returned = \call_user_func_array($callable, $args);
+      $returned = $callable();
 
       if ($returned is Awaitable<_>) {
         /* HHAST_IGNORE_ERROR[DontUseAsioJoin] */
