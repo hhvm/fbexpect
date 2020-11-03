@@ -46,21 +46,16 @@ abstract class Assert {
       if (!$actual is string) {
         $actual = \var_export($actual, true);
       }
-      throw new ExpectationFailedException(
-        Str\format(
-          "%s\nFailed asserting that two values are the same:\n%s\n",
-          $message,
-          StringDiff::lines($expected, $actual)->getUnifiedDiff(),
-        ),
-      );
+    } else {
+      $expected = \print_r($expected, true);
+      $actual = \print_r($actual, true);
     }
 
     throw new ExpectationFailedException(
       Str\format(
-        "%s\nFailed asserting that %s is the same as %s",
+        "%s\nFailed asserting that two values are the same:\n%s\n",
         $message,
-        \var_export($actual, true),
-        \var_export($expected, true),
+        StringDiff::lines($expected, $actual)->getUnifiedDiff(),
       ),
     );
   }
