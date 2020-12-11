@@ -328,8 +328,7 @@ class ExpectObj<T> extends Assert {
   ): void {
     $msg = \vsprintf($msg, $args);
     $value = $this->var;
-    assert($value is Traversable<_>);
-    $this->assertContentsEqual($expected, $value, $msg);
+    $this->assertContentsEqual($expected, $value as Traversable<_>, $msg);
   }
 
   /**
