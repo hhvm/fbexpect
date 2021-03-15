@@ -493,7 +493,6 @@ class ExpectObj<T> extends Assert {
     $this->assertFalse(\array_key_exists($key, $obj), $msg);
   }
 
-
   // Asserts: $actual does not match $expected regular expression
   public function toNotMatchRegExp(
     string $expected,

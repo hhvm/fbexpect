@@ -7,7 +7,6 @@
  *
  */
 
-
 namespace Facebook\FBExpect\Constraint;
 
 class TraversableContains {
