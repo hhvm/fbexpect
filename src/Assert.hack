@@ -531,16 +531,29 @@ abstract class Assert {
     string $msg = '',
     string $path = '$actual',
   ): void {
+    // This is very not-Hack like.
+    // $expected is (object | KeyedTraversable<mixed, mixed>)
     foreach ($expected as $key => $value) {
       if ($actual is KeyedContainer<_, _>) {
+        // $key is mixed, so `?as arraykey` can fail (to null)
+        // This makes `$actual_value` null as well...
         $actual_value = idx($actual, $key ?as arraykey);
         $part = '['.\var_export($key, true).']';
       } else if (\is_object($actual)) {
+        // stdClass can have integer-like object properties.
+        // Indexing them with $actual->$int_one` is very weird, but okay.
+        // Indexing them with float, bool something that coerces, is a bug in your test.
+        // Let's fail loudly instead of silently depending on implicit casts.
+        invariant(
+          $key is arraykey,
+          'Attempting to access an object property with a %s name',
+          \gettype($key),
+        );
         $actual_value = /* HH_FIXME[2011] Dynamic property access */ $actual->$key;
         $part = '->'.$key;
       } else {
         $actual_value = null;
-        $part = null;
+        $part = '';
       }
 
       if (is_any_array($value) || \is_object($value)) {
