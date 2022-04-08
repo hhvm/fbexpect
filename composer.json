@@ -3,9 +3,8 @@
   "description": "Unit test helpers for Facebook projects",
   "license": "MIT",
   "require": {
-    "hhvm": "^4.102",
+    "hhvm": "^4.128",
     "hhvm/hacktest": "^1.0|^2.0",
-    "hhvm/hsl": "^4.0",
     "facebook/difflib": "^1.3.0"
   },
   "require-dev": {
