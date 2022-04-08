@@ -17,7 +17,7 @@ class IsType {
 
   public static function getTypes(): ImmMap<string, self::TPredicate> {
     return ImmMap {
-      'numeric' => ($x ==> \is_numeric($x)),
+      'numeric' => (\is_numeric<>),
       'integer' => ($x ==> ($x is int)),
       'int' => ($x ==> ($x is int)),
       'double' => ($x ==> ($x is float)),
@@ -27,8 +27,8 @@ class IsType {
       'boolean' => ($x ==> ($x is bool)),
       'bool' => ($x ==> ($x is bool)),
       'null' => ($x ==> $x === null),
-      'array' => ($x ==> \HH\is_php_array($x)),
-      'object' => ($x ==> \is_object($x)),
+      'array' => (\HH\is_php_array<>),
+      'object' => (\is_object<>),
       'resource' => (
         $x ==> {
           if ($x is resource) {
@@ -42,9 +42,9 @@ class IsType {
           return $is_resource;
         }
       ),
-      'scalar' => ($x ==> \is_scalar($x)),
-      'callable' => ($x ==> \is_callable($x)),
-      'iterable' => ($x ==> is_iterable($x)),
+      'scalar' => (\is_scalar<>),
+      'callable' => (\is_callable<>),
+      'iterable' => (is_iterable<>),
       'vec' => ($x ==> ($x is vec<_>)),
       'dict' => ($x ==> ($x is dict<_, _>)),
       'keyset' => ($x ==> ($x is keyset<_>)),
