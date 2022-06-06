@@ -14,7 +14,8 @@ use namespace HH\Lib\{C, Str, Vec};
 use type HH\Lib\Ref;
 use type Facebook\HackTest\ExpectationFailedException;
 
-final class ExpectObj<T> extends Assert {
+/* HHAST_IGNORE_ERROR[FinalOrAbstractClass] Intentional non-final for backward compatibility */
+class ExpectObj<T> extends Assert {
   public function __construct(private T $var) {}
 
   /**************************************
