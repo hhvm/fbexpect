@@ -100,7 +100,7 @@ final class ExpectObjTest extends HackTest {
     expect('haystack')->toNotMatchRegExp('/needle/');
 
     // sorting
-    expect(vec[1, 2, 3])->toBeSortedBy(function(int $prev, int $curr): bool {
+    expect(vec[1, 2, 3])->toBeSortedBy((int $prev, int $curr): bool ==> {
       if ($prev <= $curr) {
         return true;
       }
@@ -218,7 +218,6 @@ final class ExpectObjTest extends HackTest {
     } else {
       expect(() ==> $rm->invokeArgs($obj, vec[$expected, 'custom msg']))
         ->toThrow(ExpectationFailedException::class, 'custom msg');
-      ;
     }
 
     // And with funky sprintfification
@@ -248,7 +247,7 @@ final class ExpectObjTest extends HackTest {
   //
   public function testToThrowWithMessage(): void {
     expect(
-      function() {
+      () ==> {
         expect(
           () ==> {
             throw new ExpectObjTestException('test 2');
