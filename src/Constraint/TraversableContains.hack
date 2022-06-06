@@ -9,7 +9,7 @@
 
 namespace Facebook\FBExpect\Constraint;
 
-class TraversableContains {
+final class TraversableContains {
 
   public function __construct(private mixed $value) {}
 

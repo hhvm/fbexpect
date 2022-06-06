@@ -11,7 +11,7 @@ namespace Facebook\FBExpect\Constraint;
 
 use function Facebook\FBExpect\is_iterable;
 
-class IsType {
+final class IsType {
   const type TPredicate = (function(mixed): bool);
   public function __construct(private string $expectedType) {}
 
