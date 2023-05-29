@@ -16,7 +16,7 @@ use type Facebook\HackTest\ExpectationFailedException;
 
 /* HHAST_IGNORE_ERROR[FinalOrAbstractClass] Intentional non-final for backward compatibility */
 class ExpectObj<T> extends Assert {
-  public function __construct(private T $var) {}
+  public function __construct(private T $var)[] {}
 
   /**************************************
    **************************************
@@ -53,6 +53,22 @@ class ExpectObj<T> extends Assert {
   ): void {
     $msg = \vsprintf($msg, $args);
     $this->assertEquals($expected, $this->var, $msg);
+  }
+
+  public function toBeOfType<<<__Enforceable>> reify Treified>(
+    string $msg = '',
+    mixed ...$args
+  )[]: Treified {
+    $v = $this->var;
+    if (!$v is Treified) {
+      throw new ExpectationFailedException(Str\format(
+        "%s\nFailed to assert that %s was of the expected type.",
+        \vsprintf($msg, $args),
+        \var_export_pure($v),
+      ));
+    }
+
+    return $v;
   }
 
   /**

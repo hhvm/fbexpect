@@ -23,6 +23,6 @@ namespace Facebook\FBExpect;
  *   - Function Call Assertions
  *   - Function Exception Assertions
  */
-function expect<T>(T $obj): ExpectObj<T> {
+function expect<T>(T $obj)[]: ExpectObj<T> {
   return new ExpectObj($obj);
 }
