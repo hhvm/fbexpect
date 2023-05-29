@@ -746,7 +746,7 @@ abstract class Assert {
   }
 
   /**
-   * Each returned vec, expect for the last one is naively sortable.
+   * Each returned vec, except for the last one is naively sortable.
    * The number of nulls is returned, since there is only one value of this type.
    * Returning a `vec<null>`, just to sort and count them would be rather silly...
    */
