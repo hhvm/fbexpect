@@ -451,6 +451,23 @@ abstract class Assert {
     );
   }
 
+  public function assertContainsStrict(
+    mixed $needle,
+    Container<mixed> $haystack,
+    string $message,
+  )[]: void {
+    if (!C\contains($haystack, $needle)) {
+      throw new ExpectationFailedException(
+        Str\format(
+          "%s\nFailed asserting that %s contains %s",
+          $message,
+          \var_export_pure($haystack),
+          \var_export_pure($needle),
+        ),
+      );
+    }
+  }
+
   public function assertNotContains(
     mixed $needle,
     mixed $haystack,
@@ -587,7 +604,46 @@ abstract class Assert {
     Traversable<T> $actual,
     string $msg = '',
   ): void {
-    $this->assertEquals(Vec\sort($expected), Vec\sort($actual), $msg);
+    $expected = vec($expected);
+    $actual = vec($actual);
+
+    list($e_null_count, $e_strings, $e_ints, $e_floats, $e_bools, $e_rest) =
+      self::segregateByType($expected);
+
+    list($a_null_count, $a_strings, $a_ints, $a_floats, $a_bools, $a_rest) =
+      self::segregateByType($actual);
+
+    $this->assertEquals(
+      $e_null_count,
+      $a_null_count,
+      'Amount of nulls comparison: '.$msg,
+    );
+    $this->assertEquals(
+      Vec\sort($e_strings),
+      Vec\sort($a_strings),
+      'Checking strings only: '.$msg,
+    );
+    $this->assertEquals(
+      Vec\sort($e_ints),
+      Vec\sort($a_ints),
+      'Checking ints only: '.$msg,
+    );
+    $this->assertEquals(
+      Vec\sort($e_floats),
+      Vec\sort($a_floats),
+      'Checking floats only: '.$msg,
+    );
+    $this->assertEquals(
+      Vec\sort($e_bools),
+      Vec\sort($a_bools),
+      'Checking bools only: '.$msg,
+    );
+
+    $this->assertContentsEqualSlowPath(
+      $e_rest,
+      $a_rest,
+      'Checking non-scalars: '.$msg,
+    );
   }
   /**
    * Checks that a collection is sorted according to some criterion.
@@ -640,9 +696,8 @@ abstract class Assert {
           \var_export($pair[1], true),
         );
 
-        throw new ExpectationFailedException(
-          $main_message.': '.$failure_detail,
-        );
+        throw
+          new ExpectationFailedException($main_message.': '.$failure_detail);
       }
 
       $index++;
@@ -690,4 +745,61 @@ abstract class Assert {
     return $out;
   }
 
+  /**
+   * Each returned vec, expect for the last one is naively sortable.
+   * The number of nulls is returned, since there is only one value of this type.
+   * Returning a `vec<null>`, just to sort and count them would be rather silly...
+   */
+  private static function segregateByType(vec<mixed> $values)[]: (
+    int /*number of nulls*/,
+    vec<string>,
+    vec<int>,
+    vec<float>,
+    vec<bool>,
+    vec<mixed>,
+  ) {
+    $number_of_nulls = 0;
+    $strings = vec[];
+    $ints = vec[];
+    $floats = vec[];
+    $bools = vec[];
+    $rest = vec[];
+
+    foreach ($values as $v) {
+      if ($v is null) {
+        ++$number_of_nulls;
+      } else if ($v is string) {
+        $strings[] = $v;
+      } else if ($v is int) {
+        $ints[] = $v;
+      } else if ($v is float) {
+        $floats[] = $v;
+      } else if ($v is bool) {
+        $bools[] = $v;
+      } else {
+        $rest[] = $v;
+      }
+    }
+
+    return tuple($number_of_nulls, $strings, $ints, $floats, $bools, $rest);
+  }
+
+  private function assertContentsEqualSlowPath(
+    vec<mixed> $expected,
+    vec<mixed> $actual,
+    string $msg,
+  ): void {
+    $this->assertEquals(C\count($expected), C\count($actual), $msg);
+
+    // O(n^2), be prepared to spin here for a while...
+    foreach ($expected as $e) {
+      $this->assertContainsStrict($e, $actual, $msg);
+    }
+
+    // This test needs to be reflected.
+    // vec[A, A, A] compare to vec[A, B, C] passes the loop above.
+    foreach ($actual as $a) {
+      $this->assertContainsStrict($a, $expected, $msg);
+    }
+  }
 }
