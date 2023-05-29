@@ -108,6 +108,21 @@ final class ExpectObjTest extends HackTest {
     });
 
     expect(2)->toEqualWithDelta(1.99, 0.01);
+
+    // Optimized cases
+    expect(vec[2, 1])->toHaveSameContentAs(vec[1, 2]);
+    expect(vec['2', '1'])->toHaveSameContentAs(vec['1', '2']);
+    expect(vec[2., 1.])->toHaveSameContentAs(vec[1., 2.]);
+    expect(vec[true, false])->toHaveSameContentAs(vec[false, true]);
+    expect(vec[null, null])->toHaveSameContentAs(vec[null, null]);
+    expect(vec[null, true, 1., '1', 1])->toHaveSameContentAs(
+      vec[1, '1', 1., true, null],
+    );
+
+    // Slow path cases
+    expect(vec[dict['nested' => $o], $o, $o2])->toHaveSameContentAs(
+      vec[$o, $o2, dict['nested' => $o]],
+    );
   }
 
   /**
@@ -181,6 +196,13 @@ final class ExpectObjTest extends HackTest {
         dict['k1' => 'v1', 'k2' => 'v2'],
         dict['k1' => 'v2'],
       ],
+
+      vec['toHaveSameContentAs', vec[true], vec[1]],
+      vec['toHaveSameContentAs', vec['1'], vec[1]],
+      vec['toHaveSameContentAs', vec[1.], vec[1]],
+      vec['toHaveSameContentAs', vec[null], vec[0]],
+      vec['toHaveSameContentAs', vec[$o, $o], vec[$o, $o, $o]],
+      vec['toHaveSameContentAs', vec[$o, $o, $this], vec[$o, $o, $o]],
     ];
   }
 
@@ -549,6 +571,18 @@ final class ExpectObjTest extends HackTest {
     expect(fun('time'))->notToThrow();
   }
 
+  public function testAssertToBeOfType(): void {
+    expect(1)->toBeOfType<int>() |> self::takesT<int>($$);
+    expect(new \stdClass())->toBeOfType<\stdClass>()
+      |> self::takesT<\stdClass>($$);
+    expect(1)->toBeOfType<?int>() |> self::takesT<?int>($$);
+
+    expect(() ==> {
+      // inferred type is the generic type of toBeOfType<T>(), not the passed type.
+      expect(1)->toBeOfType<string>() |> self::takesT<string>($$);
+    })->toThrow(ExpectationFailedException::class, 'the expected type');
+  }
+
   public static function exampleStaticCallable(): void {
     throw new \Exception('Static method called!');
   }
@@ -556,4 +590,6 @@ final class ExpectObjTest extends HackTest {
   public function exampleInstanceCallable(): void {
     throw new \Exception('Instance method called!');
   }
+
+  private static function takesT<T>(T $_)[]: void {}
 }
